@@ -142,14 +142,17 @@
                                     <input type="file" id="admin-new-pfp" accept="image/*" onchange="handlePfpSelection(this)" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-600 cursor-pointer w-full">
                                 </div>
                             </div>
-                            <input type="text" id="admin-new-id" placeholder="New User ID" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
+                            <input type="text" id="admin-new-id" placeholder="User ID" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
                             <input type="password" id="admin-new-pass" placeholder="Set Password" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
                             <select id="admin-new-role" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none">
                                 <option value="student">Student</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="admin">Admin</option>
                             </select>
-                            <button onclick="adminAddUser()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-lg">Register Account</button>
+                            <div class="flex gap-4">
+                                <button onclick="adminSaveUser()" id="admin-save-btn" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-lg">Register Account</button>
+                                <button onclick="adminCancelEdit()" id="admin-cancel-edit-btn" class="hidden px-8 bg-slate-100 text-slate-600 py-4 rounded-2xl font-bold hover:bg-slate-200 transition-all">Cancel</button>
+                            </div>
                         </div>
                     </div>
 
@@ -418,24 +421,72 @@
         }
 
         // --- ADMIN CONTROLS ---
-        function adminAddUser() {
+        let editingUserId = null;
+
+        function adminSaveUser() {
             const id = document.getElementById('admin-new-id').value.trim();
             const pass = document.getElementById('admin-new-pass').value.trim();
             const role = document.getElementById('admin-new-role').value;
 
             if(!id || !pass) return sysNotify("All fields required.", "Form Error", "❌");
-            if(db.users.find(u => u.id === id)) return sysNotify("User ID already exists.", "ID Error", "❌");
 
-            db.users.push({ id, pass, role, pfp: selectedPfpData });
+            if (editingUserId) {
+                // Update existing user
+                const userIndex = db.users.findIndex(u => u.id === editingUserId);
+                if (userIndex !== -1) {
+                    db.users[userIndex].pass = pass;
+                    db.users[userIndex].role = role;
+                    db.users[userIndex].pfp = selectedPfpData;
+                    sysNotify(`User ${id} updated successfully.`, "User Updated", "✅");
+                }
+            } else {
+                // Add new user
+                if(db.users.find(u => u.id === id)) return sysNotify("User ID already exists.", "ID Error", "❌");
+                db.users.push({ id, pass, role, pfp: selectedPfpData });
+                sysNotify(`User ${id} registered successfully.`, "User Registered", "✅");
+            }
+
             saveState();
             adminRefresh();
+            adminCancelEdit(); // Reset form after save
+        }
+
+        function adminEditUser(userId) {
+            const user = db.users.find(u => u.id === userId);
+            if (!user) return sysNotify("User not found.", "Error", "❌");
+
+            editingUserId = userId;
+            document.getElementById('admin-new-id').value = user.id;
+            document.getElementById('admin-new-id').readOnly = true; // Make ID immutable
+            document.getElementById('admin-new-id').classList.add('bg-slate-100');
+            document.getElementById('admin-new-pass').value = user.pass;
+            document.getElementById('admin-new-role').value = user.role;
+
+            selectedPfpData = user.pfp;
+            if (user.pfp) {
+                document.getElementById('pfp-preview').innerHTML = `<img src="${user.pfp}" class="w-full h-full object-cover">`;
+            } else {
+                document.getElementById('pfp-preview').innerHTML = '<span class="text-[10px] text-slate-400 font-bold">PFP</span>';
+            }
+            document.getElementById('admin-new-pfp').value = ''; // Clear file input
+
+            document.getElementById('admin-save-btn').innerText = "Update Account";
+            document.getElementById('admin-cancel-edit-btn').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function adminCancelEdit() {
+            editingUserId = null;
             document.getElementById('admin-new-id').value = '';
+            document.getElementById('admin-new-id').readOnly = false;
+            document.getElementById('admin-new-id').classList.remove('bg-slate-100');
             document.getElementById('admin-new-pass').value = '';
-            
-            // Reset PFP UI
+            document.getElementById('admin-new-role').value = 'student'; // Default role
             selectedPfpData = null;
             document.getElementById('pfp-preview').innerHTML = '<span class="text-[10px] text-slate-400 font-bold">PFP</span>';
             document.getElementById('admin-new-pfp').value = '';
+            document.getElementById('admin-save-btn').innerText = "Register Account";
+            document.getElementById('admin-cancel-edit-btn').classList.add('hidden');
         }
 
         let selectedPfpData = null;
@@ -461,8 +512,11 @@
                 <tr class="hover:bg-slate-50 group">
                     <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+u.id}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
+                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.id)}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
                             ${u.id}
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
                         </div>
                         <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -473,8 +527,11 @@
                 <tr class="hover:bg-slate-50 group">
                     <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+u.id}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
+                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.id)}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
                             ${u.id}
+                        </div>
+                        <div class="flex items-center gap-1">
+                            <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
                         </div>
                         <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
