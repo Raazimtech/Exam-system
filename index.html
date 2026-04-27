@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduExam Pro | Ultimate Assessment Cloud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .hidden { display: none; }
+        
+        /* Smooth Animations */
+        .fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* UI Enhancements */
+        .glass-nav { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .timer-warning { color: #ef4444; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        /* Custom Scrollbar */
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        
+        #modal-backdrop { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); transition: all 0.3s; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+    <div id="login-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-indigo-950 p-6">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md mx-4 text-center">
+            <img src="logo.png" alt="EduExam" class="h-20 mx-auto mb-6 object-contain">
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h1>
+            <p class="text-slate-500 mb-8 font-medium">Log in to your portal</p>
+            
+            <div class="space-y-5 text-left">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-1">User ID</label>
+                    <input type="text" id="login-id" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:ring-0 outline-none transition" placeholder="e.g. admin">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-1">Password</label>
+                    <input type="password" id="login-pass" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-indigo-500 focus:ring-0 outline-none transition" placeholder="••••••••">
+                </div>
+                <button onclick="login()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-indigo-200 transition-all active:scale-[0.98]">
+                    Sign In
+                </button>
+            </div>
+            <div id="login-error" class="text-red-500 text-sm mt-4 hidden font-semibold">❌ Invalid credentials. Please try again.</div>
+        </div>
+        <div class="mt-8 flex flex-col items-center gap-2 opacity-60">
+            <img src="raazim logo.png" alt="Raazim Tech" class="h-6">
+            <p class="text-[10px] font-black tracking-widest text-indigo-300 uppercase">Made by Raazim Tech</p>
+        </div>
+    </div>
+
+    <div id="modal-backdrop" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-5xl max-h-[90vh] rounded-[3rem] shadow-2xl overflow-hidden flex flex-col fade-in">
+            <div class="p-8 border-b flex justify-between items-center bg-slate-50">
+                <div>
+                    <h2 id="modal-student-name" class="text-3xl font-extrabold text-slate-800">Student Name</h2>
+                    <p id="modal-exam-title" class="text-indigo-600 font-bold uppercase tracking-tighter"></p>
+                </div>
+                <button onclick="closeModal()" class="bg-white hover:bg-slate-100 text-slate-400 p-3 rounded-2xl shadow-sm border border-slate-200 transition">✕ Close</button>
+            </div>
+            <div id="modal-content" class="p-8 overflow-y-auto custom-scroll space-y-6 bg-slate-50/50">
+                </div>
+            <div class="py-8 border-t flex flex-col items-center gap-2 opacity-30 grayscale">
+                <img src="raazim logo.png" alt="Raazim Tech" class="h-5">
+                <p class="text-[8px] font-black tracking-widest uppercase">Made by Raazim Tech</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Notification Modal -->
+    <div id="sys-modal-backdrop" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-10 text-center fade-in border border-white/20">
+            <div id="sys-modal-icon" class="text-5xl mb-6">🔔</div>
+            <h3 id="sys-modal-title" class="text-2xl font-black text-slate-900 mb-2">Notice</h3>
+            <p id="sys-modal-msg" class="text-slate-500 mb-8 font-medium leading-relaxed"></p>
+            <div id="sys-modal-actions" class="flex gap-4">
+                <button id="sys-modal-btn-primary" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Okay</button>
+                <button id="sys-modal-btn-secondary" class="flex-1 bg-slate-100 text-slate-600 py-4 rounded-2xl font-bold hover:bg-slate-200 transition hidden">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+        <nav class="glass-nav px-8 py-4 sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <img src="raazim logo.png" alt="Logo" class="h-10 ">
+                    <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
+                    <span class="font-extrabold text-xl tracking-tighter hidden sm:block italic">EduExam <span class="text-indigo-600">PRO</span></span>
+                </div>
+                <div class="hidden md:flex items-center gap-5">
+                    <img id="nav-user-pfp" src="" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover hidden">
+                    <div class="text-right">
+                        <p id="nav-user-id" class="text-sm font-black text-slate-800 leading-none"></p>
+                        <span id="nav-user-role" class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
+                    </div>
+                    <button onclick="location.reload()" class="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2 rounded-xl text-sm font-bold transition">Logout</button>
+                </div>
+                <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+            <!-- Mobile Dropdown -->
+            <div id="mobile-menu" class="hidden md:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-100 shadow-2xl p-6 space-y-4 fade-in">
+                <div class="flex items-center gap-4 border-b pb-4">
+                    <img id="nav-user-pfp-mobile" src="" class="w-12 h-12 rounded-full border object-cover hidden">
+                    <div class="flex-1">
+                        <p id="nav-user-id-mobile" class="text-sm font-black text-slate-800 leading-none"></p>
+                        <span id="nav-user-role-mobile" class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
+                    </div>
+                </div>
+                <button onclick="location.reload()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 px-5 py-3 rounded-xl text-sm font-bold transition">Logout Account</button>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto p-6 md:p-10">
+            
+            <section id="panel-admin" class="hidden space-y-10 fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 h-fit">
+                        <h2 class="text-xl font-extrabold mb-6 flex items-center gap-2">
+                            <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg text-sm">👤</span>
+                            Manage Identities
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div id="pfp-preview" class="w-12 h-12 rounded-full bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0">
+                                    <span class="text-[10px] text-slate-400 font-bold">PFP</span>
+                                </div>
+                                <div class="flex-1">
+                                    <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Profile Photo</label>
+                                    <input type="file" id="admin-new-pfp" accept="image/*" onchange="handlePfpSelection(this)" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-indigo-50 file:text-indigo-600 cursor-pointer w-full">
+                                </div>
+                            </div>
+                            <input type="text" id="admin-new-id" placeholder="New User ID" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
+                            <input type="password" id="admin-new-pass" placeholder="Set Password" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
+                            <select id="admin-new-role" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none">
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <button onclick="adminAddUser()" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-lg">Register Account</button>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
+                                <span>Faculty</span>
+                                <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-teachers">0</span>
+                            </div>
+                            <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-teachers" class="divide-y"></tbody></table></div>
+                        </div>
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
+                                <span>Learners</span>
+                                <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-students">0</span>
+                            </div>
+                            <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-students" class="divide-y"></tbody></table></div>
+                        </div>
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
+                                <span>Assessments</span>
+                                <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-exams">0</span>
+                            </div>
+                            <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-exams" class="divide-y"></tbody></table></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-extrabold">Global Academic Records</h2>
+                        <button onclick="adminExportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                            Export Report (PDF)
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold tracking-widest">
+                                <tr>
+                                    <th class="p-5">Student</th>
+                                    <th class="p-5">Assessment</th>
+                                    <th class="p-5">Final Score</th>
+                                    <th class="p-5">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-results-table" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="panel-teacher" class="hidden space-y-10 fade-in">
+                <!-- Teacher Analytics Summary -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 flex items-center gap-6">
+                        <div class="bg-indigo-100 p-4 rounded-2xl text-2xl">📚</div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Assessments</p>
+                            <h3 id="teacher-stat-exams" class="text-3xl font-black text-slate-900">0</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 flex items-center gap-6">
+                        <div class="bg-emerald-100 p-4 rounded-2xl text-2xl">📝</div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Submissions</p>
+                            <h3 id="teacher-stat-subs" class="text-3xl font-black text-slate-900">0</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-200 max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-8">
+                        <h2 id="teacher-form-title" class="text-3xl font-black text-slate-900">Create Assessment</h2>
+                        <span class="bg-indigo-50 text-indigo-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Editor Mode</span>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Exam Title</label>
+                                <input type="text" id="teacher-exam-title" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-indigo-400" placeholder="e.g. Physics Midterm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Duration (Minutes)</label>
+                                <input type="number" id="teacher-exam-duration" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-indigo-400" value="30">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Import Questions (CSV Format)</label>
+                            <p class="text-[10px] text-slate-400 mb-2 italic font-medium">Format: Question, OptA, OptB, OptC, OptD, CorrectAnswer</p>
+                            <textarea id="teacher-exam-csv" rows="6" class="w-full p-5 bg-slate-900 text-emerald-400 font-mono text-sm rounded-3xl" placeholder="Sample: What is 2+2,3,4,5,6,4"></textarea>
+                        </div>
+                        <div class="flex gap-4">
+                            <button onclick="teacherSaveExam()" id="teacher-submit-btn" class="flex-1 bg-indigo-600 text-white py-5 rounded-[1.5rem] font-black text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all">PUBLISH TO CLOUD</button>
+                            <button onclick="teacherResetForm()" id="teacher-cancel-edit" class="hidden px-8 bg-slate-100 text-slate-600 py-5 rounded-[1.5rem] font-bold hover:bg-slate-200 transition-all">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                    <h2 class="text-2xl font-extrabold mb-6">My Published Assessments</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold tracking-widest">
+                                <tr>
+                                    <th class="p-5">Title</th>
+                                    <th class="p-5">Questions</th>
+                                    <th class="p-5">Duration</th>
+                                    <th class="p-5 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-exams-table" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                    <h2 class="text-2xl font-extrabold mb-6">Class Submissions</h2>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold tracking-widest">
+                                <tr>
+                                    <th class="p-5">Student</th>
+                                    <th class="p-5">Assessment</th>
+                                    <th class="p-5">Final Score</th>
+                                    <th class="p-5">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teacher-results-table" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="panel-student" class="hidden fade-in">
+                <div id="student-exam-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                
+                <div id="student-exam-interface" class="hidden">
+                    <div class="flex flex-col lg:flex-row gap-8">
+                        <div class="flex-1 space-y-6" id="student-questions"></div>
+                        <div class="w-full lg:w-80">
+                            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border-2 border-indigo-100 sticky top-28 text-center">
+                                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Timer Running</h4>
+                                <div id="timer" class="text-5xl font-black text-slate-900 mb-6 tabular-nums tracking-tighter">00:00</div>
+                                <button onclick="studentSubmitExam()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-100 transition-all">Submit Now</button>
+                                <p class="mt-4 text-[10px] text-slate-400 font-medium">Do not close this tab or your progress will be lost.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- SECURE CLOUD CONFIGURATION ---
+        const CLOUD = {
+            BIN_ID: "69ef9795856a6821897ba9f0",
+            API_KEY: "$2a$10$VgVAfIMuJJkppxqYEA90A.vGGGWZRRwayaU6aApoiIBkH8n2BSF/q",
+            URL: "https://api.jsonbin.io/v3/b/69ef9795856a6821897ba9f0"
+        };
+
+        let db = { users: [], exams: [], submissions: [] };
+        let currentUser = null;
+        let activeExam = null;
+        let timerInterval = null;
+
+        // --- DATABASE SYNC ---
+        async function fetchState() {
+            try {
+                const res = await fetch(CLOUD.URL, { headers: { "X-Access-Key": CLOUD.API_KEY } });
+                const data = await res.json();
+                db = data.record || { users: [], exams: [], submissions: [] };
+            } catch (err) { console.error("Cloud Error", err); }
+        }
+
+        async function saveState() {
+            try {
+                await fetch(CLOUD.URL, {
+                    method: 'PUT',
+                    headers: { "Content-Type": "application/json", "X-Access-Key": CLOUD.API_KEY },
+                    body: JSON.stringify(db)
+                });
+            } catch (err) { sysNotify("Sync failed. Check connection.", "Error", "❌"); }
+        }
+
+        // --- UI UTILS ---
+        function sysNotify(msg, title = "Notice", icon = "🔔", onDone = null) {
+            document.getElementById('sys-modal-title').innerText = title;
+            document.getElementById('sys-modal-msg').innerText = msg;
+            document.getElementById('sys-modal-icon').innerText = icon;
+            document.getElementById('sys-modal-btn-secondary').classList.add('hidden');
+            document.getElementById('sys-modal-btn-primary').onclick = () => {
+                document.getElementById('sys-modal-backdrop').classList.add('hidden');
+                if(onDone) onDone();
+            };
+            document.getElementById('sys-modal-backdrop').classList.remove('hidden');
+        }
+
+        function sysConfirm(msg, onConfirm) {
+            document.getElementById('sys-modal-title').innerText = "Confirmation";
+            document.getElementById('sys-modal-msg').innerText = msg;
+            document.getElementById('sys-modal-icon').innerText = "⚠️";
+            document.getElementById('sys-modal-btn-secondary').classList.remove('hidden');
+            document.getElementById('sys-modal-btn-primary').onclick = () => {
+                document.getElementById('sys-modal-backdrop').classList.add('hidden');
+                onConfirm();
+            };
+            document.getElementById('sys-modal-btn-secondary').onclick = () => {
+                document.getElementById('sys-modal-backdrop').classList.add('hidden');
+            };
+            document.getElementById('sys-modal-backdrop').classList.remove('hidden');
+        }
+
+        // --- AUTH ENGINE ---
+        async function login() {
+            const id = document.getElementById('login-id').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+            if(!id || !pass) return;
+
+            await fetchState();
+
+            // Default Admin Logic if Database is empty
+            if (id === 'admin' && pass === 'admin123' && db.users.length === 0) {
+                currentUser = { id: 'admin', role: 'admin' };
+            } else {
+                currentUser = db.users.find(u => u.id === id && u.pass === pass);
+            }
+
+            if (currentUser) {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                document.getElementById('nav-user-id').innerText = currentUser.id;
+                document.getElementById('nav-user-role').innerText = currentUser.role;
+                
+                const pfp = currentUser.pfp || `https://ui-avatars.com/api/?name=${currentUser.id}`;
+                const navImg = document.getElementById('nav-user-pfp');
+                navImg.src = pfp; navImg.classList.remove('hidden');
+                const navImgMob = document.getElementById('nav-user-pfp-mobile');
+                navImgMob.src = pfp; navImgMob.classList.remove('hidden');
+
+                document.getElementById('nav-user-id-mobile').innerText = currentUser.id;
+                document.getElementById('nav-user-role-mobile').innerText = currentUser.role;
+                initPanel(currentUser.role);
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function initPanel(role) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`panel-${role}`).classList.remove('hidden');
+
+            if (role === 'admin') { adminRefresh(); renderResults('admin-results-table'); }
+            if (role === 'teacher') { 
+                teacherRefreshStats();
+                renderTeacherExams(); 
+                renderResults('teacher-results-table'); 
+            }
+            if (role === 'student') studentListExams();
+        }
+
+        // --- ADMIN CONTROLS ---
+        function adminAddUser() {
+            const id = document.getElementById('admin-new-id').value.trim();
+            const pass = document.getElementById('admin-new-pass').value.trim();
+            const role = document.getElementById('admin-new-role').value;
+
+            if(!id || !pass) return sysNotify("All fields required.", "Form Error", "❌");
+            if(db.users.find(u => u.id === id)) return sysNotify("User ID already exists.", "ID Error", "❌");
+
+            db.users.push({ id, pass, role, pfp: selectedPfpData });
+            saveState();
+            adminRefresh();
+            document.getElementById('admin-new-id').value = '';
+            document.getElementById('admin-new-pass').value = '';
+            
+            // Reset PFP UI
+            selectedPfpData = null;
+            document.getElementById('pfp-preview').innerHTML = '<span class="text-[10px] text-slate-400 font-bold">PFP</span>';
+            document.getElementById('admin-new-pfp').value = '';
+        }
+
+        let selectedPfpData = null;
+        function handlePfpSelection(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    selectedPfpData = e.target.result;
+                    document.getElementById('pfp-preview').innerHTML = `<img src="${selectedPfpData}" class="w-full h-full object-cover">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function adminRefresh() {
+            const t = db.users.filter(u => u.role === 'teacher'), s = db.users.filter(u => u.role === 'student');
+            document.getElementById('count-teachers').innerText = t.length;
+            document.getElementById('count-students').innerText = s.length;
+            document.getElementById('count-exams').innerText = db.exams.length;
+            
+            document.getElementById('table-teachers').innerHTML = t.map(u => `
+                <tr class="hover:bg-slate-50 group">
+                    <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+u.id}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
+                            ${u.id}
+                        </div>
+                        <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                </tr>`).join('');
+            document.getElementById('table-students').innerHTML = s.map(u => `
+                <tr class="hover:bg-slate-50 group">
+                    <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+u.id}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
+                            ${u.id}
+                        </div>
+                        <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                </tr>`).join('');
+            
+            document.getElementById('table-exams').innerHTML = db.exams.map(ex => `
+                <tr class="hover:bg-slate-50 group">
+                    <td class="p-4 font-bold text-slate-700 flex justify-between items-center">
+                        <span class="truncate mr-2">${ex.title}</span>
+                        <button onclick="adminDeleteExam('${ex.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete Exam">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function adminDeleteUser(userId) {
+            if (userId === currentUser.id) return sysNotify("Security: You cannot delete your own administrative account.", "Access Denied", "🛡️");
+            
+            sysConfirm(`Are you sure you want to permanently delete user: ${userId}?`, () => {
+                db.users = db.users.filter(u => u.id !== userId);
+                saveState();
+                adminRefresh();
+            });
+        }
+
+        function adminDeleteExam(examId) {
+            sysConfirm("Warning: Deleting this assessment will also remove all student results associated with it. Proceed?", () => {
+                db.exams = db.exams.filter(e => e.id !== examId);
+                db.submissions = db.submissions.filter(s => s.examId !== examId);
+                saveState();
+                adminRefresh();
+                renderResults('admin-results-table');
+            });
+        }
+
+        function adminExportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(20);
+            doc.setTextColor(30, 41, 59);
+            doc.text("Academic Performance Report", 14, 22);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 30);
+
+            const tableData = db.submissions.map(sub => {
+                const ex = db.exams.find(e => e.id === sub.examId);
+                let correct = 0; 
+                if(ex) sub.answers.forEach((a, i) => { if(a === ex.questions[i].ans) correct++; });
+                return [sub.studentId, ex ? ex.title : 'N/A', ex ? `${correct}/${ex.questions.length}` : 'N/A', sub.time];
+            });
+
+            doc.autoTable({
+                startY: 40,
+                head: [['Student ID', 'Assessment', 'Score', 'Timestamp']],
+                body: tableData,
+                headStyles: { fillColor: [79, 70, 229], fontStyle: 'bold' },
+                alternateRowStyles: { fillColor: [248, 250, 252] }
+            });
+
+            doc.save("EduExam_Results_Report.pdf");
+        }
+
+        // --- PERFORMANCE ANALYTICS MODAL ---
+        function openReview(subIdx) {
+            const sub = db.submissions[subIdx];
+            const exam = db.exams.find(e => e.id === sub.examId);
+            if(!exam) return;
+
+            document.getElementById('modal-student-name').innerText = `Student: ${sub.studentId}`;
+            document.getElementById('modal-exam-title').innerText = `Exam ID: ${exam.title}`;
+
+            const content = exam.questions.map((q, i) => {
+                const studentAns = sub.answers[i];
+                const isCorrect = studentAns === q.ans;
+                return `
+                    <div class="p-6 rounded-[2rem] border-2 ${isCorrect ? 'border-emerald-100 bg-emerald-50' : 'border-red-100 bg-red-50'}">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="font-extrabold text-slate-800 text-lg">${i+1}. ${q.q}</h4>
+                            <span class="${isCorrect ? 'text-emerald-600' : 'text-red-600'} font-black text-sm uppercase">
+                                ${isCorrect ? '✓ Correct' : '✕ Incorrect'}
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            ${q.options.map(opt => {
+                                let style = "bg-white border-slate-100 text-slate-500";
+                                if(opt === q.ans) style = "bg-emerald-500 border-emerald-500 text-white font-bold ring-4 ring-emerald-100";
+                                if(opt === studentAns && !isCorrect) style = "bg-red-500 border-red-500 text-white font-bold ring-4 ring-red-100";
+                                
+                                return `<div class="p-3 border-2 rounded-xl text-sm ${style}">${opt}</div>`;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('modal-content').innerHTML = content;
+            document.getElementById('modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeModal() { document.getElementById('modal-backdrop').classList.add('hidden'); }
+
+        function renderResults(tid) {
+            const table = document.getElementById(tid);
+            table.innerHTML = db.submissions.map((sub, idx) => {
+                const ex = db.exams.find(e => e.id === sub.examId);
+                if(!ex) return "";
+                
+                // Filter for teacher panel to show only their own assessments
+                if (tid === 'teacher-results-table' && ex.author !== currentUser.id) return "";
+
+                let correct = 0; sub.answers.forEach((a, i) => { if(a === ex.questions[i].ans) correct++; });
+                const percent = Math.round((correct / ex.questions.length) * 100);
+
+                return `
+                    <tr class="hover:bg-indigo-50 cursor-pointer group transition" onclick="openReview(${idx})">
+                        <td class="p-5 font-black text-indigo-600 underline-offset-4 group-hover:underline">${sub.studentId}</td>
+                        <td class="p-5 font-bold text-slate-600">${ex.title}</td>
+                        <td class="p-5 font-black text-slate-900">${correct}/${ex.questions.length} <span class="text-[10px] text-slate-400 font-medium ml-1">(${percent}%)</span></td>
+                        <td class="p-5 text-xs text-slate-400 font-medium">${sub.time}</td>
+                    </tr>
+                `;
+            }).reverse().join('') || `<tr><td colspan="4" class="p-10 text-center text-slate-400 font-bold italic">No data synced yet.</td></tr>`;
+        }
+
+        // --- TEACHER ENGINE ---
+        function teacherRefreshStats() {
+            const myExams = db.exams.filter(ex => ex.author === currentUser.id);
+            const myExamIds = myExams.map(ex => ex.id);
+            const mySubmissions = db.submissions.filter(s => myExamIds.includes(s.examId));
+
+            document.getElementById('teacher-stat-exams').innerText = myExams.length;
+            document.getElementById('teacher-stat-subs').innerText = mySubmissions.length;
+        }
+
+        let editingExamId = null;
+
+        function renderTeacherExams() {
+            const table = document.getElementById('teacher-exams-table');
+            const myExams = db.exams.filter(ex => ex.author === currentUser.id);
+            
+            table.innerHTML = myExams.map(ex => `
+                <tr class="hover:bg-slate-50 group">
+                    <td class="p-5 font-bold text-slate-700">${ex.title}</td>
+                    <td class="p-5 text-slate-500">${ex.questions.length} Items</td>
+                    <td class="p-5 text-slate-500">${ex.duration}m</td>
+                    <td class="p-5 text-right">
+                        <button onclick="teacherEditExam('${ex.id}')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">
+                            Edit Exam
+                        </button>
+                    </td>
+                </tr>
+            `).join('') || `<tr><td colspan="4" class="p-10 text-center text-slate-400 italic">No exams published yet.</td></tr>`;
+        }
+
+        function teacherEditExam(examId) {
+            const ex = db.exams.find(e => e.id === examId);
+            if(!ex) return;
+            
+            editingExamId = examId;
+            document.getElementById('teacher-exam-title').value = ex.title;
+            document.getElementById('teacher-exam-duration').value = ex.duration;
+            const csv = ex.questions.map(q => `${q.q},${q.options.join(',')},${q.ans}`).join('\n');
+            document.getElementById('teacher-exam-csv').value = csv;
+            
+            document.getElementById('teacher-form-title').innerText = "Edit Assessment";
+            document.getElementById('teacher-submit-btn').innerText = "UPDATE ASSESSMENT";
+            document.getElementById('teacher-cancel-edit').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function teacherResetForm() {
+            editingExamId = null;
+            document.getElementById('teacher-exam-title').value = '';
+            document.getElementById('teacher-exam-duration').value = '30';
+            document.getElementById('teacher-exam-csv').value = '';
+            document.getElementById('teacher-form-title').innerText = "Create Assessment";
+            document.getElementById('teacher-submit-btn').innerText = "PUBLISH TO CLOUD";
+            document.getElementById('teacher-cancel-edit').classList.add('hidden');
+        }
+
+        async function teacherSaveExam() {
+            const title = document.getElementById('teacher-exam-title').value.trim();
+            const dur = document.getElementById('teacher-exam-duration').value;
+            const csv = document.getElementById('teacher-exam-csv').value.trim();
+
+            if(!title || !csv) return;
+
+            const questions = csv.split('\n').map(line => {
+                const p = line.split(',');
+                return { q: p[0], options: [p[1], p[2], p[3], p[4]], ans: p[5]?.trim() };
+            });
+
+            if (editingExamId) {
+                const idx = db.exams.findIndex(e => e.id === editingExamId);
+                db.exams[idx] = { ...db.exams[idx], title, duration: dur, questions };
+            } else {
+                db.exams.push({ id: "EX"+Date.now(), title, duration: dur, questions, author: currentUser.id });
+            }
+
+            await saveState();
+            sysNotify("Assessment successfully pushed to students.", "Cloud Synced", "✅", () => location.reload());
+        }
+
+        // --- STUDENT ENGINE ---
+        function studentListExams() {
+            const list = document.getElementById('student-exam-list');
+            list.innerHTML = db.exams.map(ex => {
+                const done = db.submissions.some(s => s.examId === ex.id && s.studentId === currentUser.id);
+                return `
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-transparent hover:border-indigo-500 transition-all group">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-2xl font-black text-slate-800">${ex.title}</h3>
+                            <span class="bg-slate-100 text-slate-400 p-2 rounded-xl">📝</span>
+                        </div>
+                        <p class="text-slate-500 font-medium mb-8">${ex.questions.length} Problems • ${ex.duration} Minutes</p>
+                        <button onclick="studentStartExam('${ex.id}')" ${done ? 'disabled' : ''} 
+                            class="w-full py-4 rounded-2xl font-bold transition-all ${done ? 'bg-slate-50 text-slate-300' : 'bg-indigo-600 text-white shadow-lg group-hover:scale-[1.02]'}">
+                            ${done ? 'Completed' : 'Begin Assessment'}
+                        </button>
+                    </div>
+                `;
+            }).join('') || `<div class="col-span-full py-20 text-center text-slate-400 font-bold">No active assessments available.</div>`;
+        }
+
+        function studentStartExam(id) {
+            activeExam = db.exams.find(e => e.id === id);
+            document.getElementById('student-exam-list').classList.add('hidden');
+            document.getElementById('student-exam-interface').classList.remove('hidden');
+
+            document.getElementById('student-questions').innerHTML = activeExam.questions.map((q, i) => `
+                <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100">
+                    <h3 class="text-2xl font-extrabold text-slate-800 mb-8">${i+1}. ${q.q}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${q.options.map(o => `
+                            <label class="p-5 border-2 border-slate-50 bg-slate-50 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-indigo-500 hover:bg-white transition-all">
+                                <input type="radio" name="q${i}" value="${o}" class="w-6 h-6 text-indigo-600">
+                                <span class="font-bold text-slate-700">${o}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            let s = activeExam.duration * 60;
+            timerInterval = setInterval(() => {
+                const m = Math.floor(s/60), sec = s%60;
+                const display = document.getElementById('timer');
+                display.innerText = `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+                if(s <= 60) display.classList.add('timer-warning');
+                if(s-- <= 0) studentSubmitExam();
+            }, 1000);
+        }
+
+        async function studentSubmitExam() {
+            clearInterval(timerInterval);
+            const ans = activeExam.questions.map((_, i) => document.querySelector(`input[name="q${i}"]:checked`)?.value || null);
+            db.submissions.push({
+                studentId: currentUser.id,
+                examId: activeExam.id,
+                answers: ans,
+                time: new Date().toLocaleString()
+            });
+            await saveState();
+            sysNotify("Submission complete. You can now view your results with your teacher.", "Assessment Finished", "🎓", () => location.reload());
+        }
+
+        window.onload = fetchState;
+    </script>
+
+    <footer class="py-12 flex flex-col items-center justify-center gap-2 border-t border-slate-100 mt-10">
+        <img src="logo.png" alt="Raazim Tech Logo" class="h-6 grayscale opacity-40 hover:opacity-100 transition-opacity">
+        <p class="text-slate-400 text-[10px] font-black tracking-widest uppercase">Made by Raazim Tech</p>
+    </footer>
+</body>
+</html>
