@@ -10,7 +10,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .hidden { display: none; }
         
         /* Smooth Animations */
@@ -28,6 +28,90 @@
         .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
         #modal-backdrop { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(8px); transition: all 0.3s; }
+
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-custom { animation: spin 1s linear infinite; }
+
+        body.compact-screen .glass-nav {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        body.compact-screen #login-screen {
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        body.compact-screen #login-screen > div.bg-white {
+            padding: 1.5rem;
+            border-radius: 1.75rem;
+            margin-top: 0.75rem;
+        }
+
+        body.compact-screen #app-container > main {
+            padding: 1rem;
+        }
+
+        body.compact-screen #modal-backdrop > div,
+        body.compact-screen #sys-modal-backdrop > div,
+        body.compact-screen #transition-overlay > div {
+            width: min(100%, calc(100vw - 1rem));
+        }
+
+        body.compact-screen #modal-backdrop > div {
+            max-height: calc(100vh - 1rem);
+            border-radius: 1.5rem;
+        }
+
+        body.compact-screen .bg-white.p-8,
+        body.compact-screen .bg-white.p-10 {
+            padding: 1rem !important;
+        }
+
+        body.compact-screen [class*="rounded-[3rem]"],
+        body.compact-screen [class*="rounded-[2.5rem]"] {
+            border-radius: 1.5rem !important;
+        }
+
+        body.compact-screen [class*="rounded-[2rem]"] {
+            border-radius: 1.25rem !important;
+        }
+
+        body.compact-screen .grid[class*="lg:grid-cols-3"],
+        body.compact-screen .grid[class*="md:grid-cols-2"],
+        body.compact-screen .grid[class*="xl:grid-cols-2"],
+        body.compact-screen .grid[class*="xl:grid-cols-3"],
+        body.compact-screen .grid[class*="xl:grid-cols-4"] {
+            grid-template-columns: 1fr !important;
+        }
+
+        body.compact-screen .lg\:col-span-2,
+        body.compact-screen .lg\:col-span-3,
+        body.compact-screen .xl\:col-span-2 {
+            grid-column: auto !important;
+        }
+
+        body.compact-screen #student-exam-list,
+        body.compact-screen #admin-class-page-table,
+        body.compact-screen #admin-profile-records {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+        }
+
+        body.compact-screen #admin-class-filters button {
+            min-width: 0 !important;
+            width: 100%;
+        }
+
+        body.compact-screen .sticky.top-28 {
+            top: 4.5rem !important;
+        }
+
+        body.compact-screen .overflow-x-auto table {
+            min-width: 42rem;
+        }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
@@ -63,6 +147,7 @@
         <div class="bg-white w-full max-w-5xl max-h-[90vh] rounded-[3rem] shadow-2xl overflow-hidden flex flex-col fade-in">
             <div class="p-8 border-b flex justify-between items-center bg-slate-50">
                 <div>
+                    <img src="logo.png" alt="Logo" class="h-8 mb-3 object-contain">
                     <h2 id="modal-student-name" class="text-3xl font-extrabold text-slate-800">Student Name</h2>
                     <p id="modal-exam-title" class="text-indigo-600 font-bold uppercase tracking-tighter"></p>
                 </div>
@@ -87,6 +172,24 @@
                 <button id="sys-modal-btn-primary" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Okay</button>
                 <button id="sys-modal-btn-secondary" class="flex-1 bg-slate-100 text-slate-600 py-4 rounded-2xl font-bold hover:bg-slate-200 transition hidden">Cancel</button>
             </div>
+            <div class="mt-8 pt-6 border-t flex flex-col items-center gap-2 opacity-30 grayscale">
+                <img src="raazim logo.png" alt="Raazim Tech" class="h-4">
+                <p class="text-[8px] font-black tracking-widest uppercase">Made by Raazim Tech</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="transition-overlay" class="fixed inset-0 z-[130] hidden items-center justify-center bg-slate-950/60 backdrop-blur-md px-4">
+        <div class="relative w-full max-w-md">
+            <div class="absolute -inset-10 rounded-full bg-indigo-500/20 blur-3xl"></div>
+            <div class="relative overflow-hidden rounded-[2.5rem] border border-white/60 bg-white/95 p-8 text-center shadow-2xl">
+                <div class="mx-auto mb-6 h-16 w-16 rounded-full border-[5px] border-indigo-100 border-t-indigo-600 animate-spin-custom"></div>
+                <h3 id="transition-title" class="text-2xl font-black text-slate-900">Loading</h3>
+                <p id="transition-message" class="mt-2 text-sm font-medium text-slate-500">Please wait...</p>
+                <div class="mt-6 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div class="h-full w-1/2 rounded-full bg-gradient-to-r from-indigo-600 via-slate-900 to-indigo-500 animate-pulse"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -94,17 +197,22 @@
         <nav class="glass-nav px-8 py-4 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <img src="raazim logo.png" alt="Logo" class="h-10 ">
+                    <img src="logo.png" alt="Logo" class="h-10 object-contain">
                     <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
                     <span class="font-extrabold text-xl tracking-tighter hidden sm:block italic">EduExam <span class="text-indigo-600">PRO</span></span>
                 </div>
                 <div class="hidden md:flex items-center gap-5">
+                    <button onclick="syncDatabase()" id="sync-btn" class="flex items-center gap-2 bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-100 transition mr-2">
+                        <svg class="sync-icon w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <span id="sync-text">Sync Cloud</span>
+                    </button>
+
                     <img id="nav-user-pfp" src="" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover hidden">
                     <div class="text-right">
                         <p id="nav-user-id" class="text-sm font-black text-slate-800 leading-none"></p>
                         <span id="nav-user-role" class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
                     </div>
-                    <button onclick="location.reload()" class="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2 rounded-xl text-sm font-bold transition">Logout</button>
+                    <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2 rounded-xl text-sm font-bold transition">Logout</button>
                 </div>
                 <button onclick="toggleMobileMenu()" class="md:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -119,15 +227,24 @@
                         <span id="nav-user-role-mobile" class="text-[10px] bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
                     </div>
                 </div>
-                <button onclick="location.reload()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 px-5 py-3 rounded-xl text-sm font-bold transition">Logout Account</button>
+                <button onclick="syncDatabase()" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-5 py-3 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+                     <svg class="sync-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Sync Database
+                </button>
+                <button onclick="logout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 px-5 py-3 rounded-xl text-sm font-bold transition">Logout Account</button>
+                <div class="pt-4 flex flex-col items-center gap-1 opacity-20 grayscale">
+                    <img src="raazim logo.png" alt="Raazim Tech" class="h-4">
+                    <p class="text-[8px] font-black tracking-widest uppercase">Made by Raazim Tech</p>
+                </div>
             </div>
         </nav>
 
         <main class="max-w-7xl mx-auto p-6 md:p-10">
             
             <section id="panel-admin" class="hidden space-y-10 fade-in">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 h-fit">
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div id="admin-management-card" class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 h-fit">
                         <h2 class="text-xl font-extrabold mb-6 flex items-center gap-2">
                             <span class="bg-indigo-100 text-indigo-600 p-2 rounded-lg text-sm">👤</span>
                             Manage Identities
@@ -144,10 +261,16 @@
                             </div>
                             <input type="text" id="admin-new-id" placeholder="User ID" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
                             <input type="password" id="admin-new-pass" placeholder="Set Password" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
-                            <select id="admin-new-role" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none">
+                            <select id="admin-new-role" onchange="handleRoleChange()" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none">
                                 <option value="student">Student</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="admin">Admin</option>
+                            </select>
+                            <select id="admin-new-class" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500 hidden">
+                                <option value="" disabled selected>Select Class</option>
+                                <option value="Sophomore Software Eng">Sophomore Software Eng</option>
+                                <option value="Junior Software Eng">Junior Software Eng</option>
+                                <option value="Senior Software Eng">Senior Software Eng</option>
                             </select>
                             <div class="flex gap-4">
                                 <button onclick="adminSaveUser()" id="admin-save-btn" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition-all shadow-lg">Register Account</button>
@@ -156,22 +279,38 @@
                         </div>
                     </div>
 
-                    <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white px-6 py-4 rounded-[1.5rem] shadow-sm border border-slate-200 flex items-center gap-4">
+                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <input type="text" id="admin-search-users" oninput="adminRefresh()" placeholder="Search faculty or assessments..." class="flex-1 outline-none text-sm font-medium bg-transparent">
+                        </div>
+                        <div id="admin-class-card" class="bg-white p-5 rounded-[1.5rem] shadow-sm border border-slate-200 space-y-4">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <p class="text-xs font-black uppercase tracking-widest text-slate-400">Student Class Pages</p>
+                                    <h3 class="text-lg font-extrabold text-slate-900">Tap a class to open its own page</h3>
+                                </div>
+                                <span class="text-[11px] font-bold text-slate-500 bg-slate-50 px-3 py-1 rounded-full border">No mixing</span>
+                            </div>
+                            <div id="admin-class-filters" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+                        </div>
+                        <div id="admin-overview" class="space-y-10">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div id="admin-faculty-card" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
                             <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
                                 <span>Faculty</span>
                                 <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-teachers">0</span>
                             </div>
                             <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-teachers" class="divide-y"></tbody></table></div>
                         </div>
-                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
-                            <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
-                                <span>Learners</span>
-                                <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-students">0</span>
+                        <div id="admin-top-students-card" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                            <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between items-center">
+                                <span>Top Student by Class</span>
+                                <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-top-classes">0</span>
                             </div>
-                            <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-students" class="divide-y"></tbody></table></div>
+                            <div id="admin-top-students" class="p-4 space-y-3 max-h-60 overflow-y-auto custom-scroll"></div>
                         </div>
-                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
+                        <div id="admin-assessments-card" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
                             <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
                                 <span>Assessments</span>
                                 <span class="text-indigo-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-exams">0</span>
@@ -179,30 +318,111 @@
                             <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-exams" class="divide-y"></tbody></table></div>
                         </div>
                     </div>
+                    </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                        <h2 class="text-2xl font-extrabold">Global Academic Records</h2>
-                        <button onclick="adminExportPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-100">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                            Export Report (PDF)
-                        </button>
+                        </div>
+
+                        <div id="admin-class-page" class="hidden bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-slate-900 to-slate-800 text-white p-8 mb-8">
+                                <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(circle at top right, rgba(255,255,255,0.24), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,0.5), transparent 28%);"></div>
+                                <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                                    <div class="max-w-2xl">
+                                        <p class="text-[11px] font-black uppercase tracking-[0.35em] text-indigo-100">Class Workspace</p>
+                                        <h2 id="admin-class-page-title" class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Class Students</h2>
+                                        <p class="mt-4 text-indigo-100 max-w-xl leading-relaxed">This page shows only one class at a time, with a clean workspace for managing learners, no cross-class mixing, and direct edit or delete actions.</p>
+                                    </div>
+                                    <div class="flex flex-wrap gap-3">
+                                        <button onclick="closeAdminClassPage()" class="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl text-sm font-bold transition border border-white/20">
+                                            Back to Overview
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Selected Class</p>
+                                    <p id="admin-class-page-label" class="text-xl font-extrabold text-slate-900 mt-1">-</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Students</p>
+                                    <p id="admin-class-page-count" class="text-xl font-extrabold text-slate-900 mt-1">0</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Top Student</p>
+                                    <p id="admin-class-top-student" class="text-xl font-extrabold text-slate-900 mt-1">-</p>
+                                    <p id="admin-class-top-student-meta" class="text-xs text-slate-500 font-medium mt-1">No submissions yet</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Best Performance</p>
+                                    <p id="admin-class-best-performance" class="text-xl font-extrabold text-slate-900 mt-1">-</p>
+                                    <p id="admin-class-best-performance-meta" class="text-xs text-slate-500 font-medium mt-1">Score and time</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50 px-6 py-4 rounded-[1.5rem] border border-slate-200 flex items-center gap-4 mb-8">
+                                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                                <input type="text" id="admin-class-search" oninput="renderAdminClassPage()" placeholder="Search learners in this class..." class="flex-1 outline-none text-sm font-medium bg-transparent">
+                            </div>
+
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" id="admin-class-page-table"></div>
+                        </div>
+
+                        <div id="admin-student-profile-page" class="hidden bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-indigo-700 to-indigo-500 text-white p-8 mb-8">
+                                <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(circle at top right, rgba(255,255,255,0.22), transparent 35%), radial-gradient(circle at bottom left, rgba(255,255,255,0.14), transparent 28%);"></div>
+                                <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                                    <div class="max-w-2xl flex items-center gap-5">
+                                        <img id="admin-profile-pfp" src="" class="w-24 h-24 rounded-[1.8rem] border-4 border-white/20 object-cover shadow-2xl">
+                                        <div>
+                                            <p class="text-[11px] font-black uppercase tracking-[0.35em] text-indigo-100">Student Profile</p>
+                                            <h2 id="admin-profile-name" class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Student</h2>
+                                            <p id="admin-profile-class" class="mt-3 text-indigo-100 max-w-xl leading-relaxed">Class details</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-3">
+                                        <button onclick="closeAdminStudentProfile()" class="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl text-sm font-bold transition border border-white/20">
+                                            Back to Class
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Assessments Done</p>
+                                    <p id="admin-profile-total" class="text-xl font-extrabold text-slate-900 mt-1">0</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Average Score</p>
+                                    <p id="admin-profile-average" class="text-xl font-extrabold text-slate-900 mt-1">0%</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Best Score</p>
+                                    <p id="admin-profile-best-score" class="text-xl font-extrabold text-slate-900 mt-1">-</p>
+                                    <p id="admin-profile-best-score-meta" class="text-xs text-slate-500 font-medium mt-1">No submissions yet</p>
+                                </div>
+                                <div class="bg-slate-50 border border-slate-200 rounded-[1.5rem] p-5">
+                                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Fastest Best Run</p>
+                                    <p id="admin-profile-best-time" class="text-xl font-extrabold text-slate-900 mt-1">-</p>
+                                    <p id="admin-profile-best-time-meta" class="text-xs text-slate-500 font-medium mt-1">Score and time</p>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-4">
+                                <div>
+                                    <h3 class="text-2xl font-black text-slate-900">Assessment Records</h3>
+                                    <p class="text-sm text-slate-500 font-medium">Sorted by score first, then lowest time.</p>
+                                </div>
+                                <div class="bg-slate-50 px-4 py-2 rounded-full border border-slate-200 text-xs font-bold uppercase tracking-widest text-slate-500">
+                                    No mixing
+                                </div>
+                            </div>
+
+                            <div id="admin-profile-records" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
+                        </div>
                     </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold tracking-widest">
-                                <tr>
-                                    <th class="p-5">Student</th>
-                                    <th class="p-5">Assessment</th>
-                                    <th class="p-5">Final Score</th>
-                                    <th class="p-5">Timestamp</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-results-table" class="divide-y"></tbody>
-                        </table>
-                    </div>
-                </div>
             </section>
 
             <section id="panel-teacher" class="hidden space-y-10 fade-in">
@@ -241,6 +461,15 @@
                             </div>
                         </div>
                         <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Assign to Class</label>
+                            <select id="teacher-exam-class" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-indigo-400">
+                                <option value="" disabled selected>Select Class</option>
+                                <option value="Sophomore Software Eng">Sophomore Software Eng</option>
+                                <option value="Junior Software Eng">Junior Software Eng</option>
+                                <option value="Senior Software Eng">Senior Software Eng</option>
+                            </select>
+                        </div>
+                        <div>
                             <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Import Questions (CSV Format)</label>
                             <p class="text-[10px] text-slate-400 mb-2 italic font-medium">Format: Question, OptA, OptB, OptC, OptD, CorrectAnswer</p>
                             <textarea id="teacher-exam-csv" rows="6" class="w-full p-5 bg-slate-900 text-emerald-400 font-mono text-sm rounded-3xl" placeholder="Sample: What is 2+2,3,4,5,6,4"></textarea>
@@ -253,14 +482,18 @@
                 </div>
 
                 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                    <h2 class="text-2xl font-extrabold mb-6">My Published Assessments</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-extrabold">My Published Assessments</h2>
+                        <input type="text" id="teacher-search-exams" oninput="renderTeacherExams()" placeholder="Filter assessments..." class="p-3 border rounded-2xl text-sm outline-none focus:ring-2 ring-indigo-500 w-full sm:w-64">
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
                             <thead class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold tracking-widest">
                                 <tr>
-                                    <th class="p-5">Title</th>
-                                    <th class="p-5">Questions</th>
-                                    <th class="p-5">Duration</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortTeacherExams('title')">Title</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortTeacherExams('class')">Class</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortTeacherExams('questions')">Questions</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortTeacherExams('duration')">Duration</th>
                                     <th class="p-5 text-right">Actions</th>
                                 </tr>
                             </thead>
@@ -270,15 +503,23 @@
                 </div>
 
                 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                    <h2 class="text-2xl font-extrabold mb-6">Class Submissions</h2>
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h2 class="text-2xl font-extrabold">Class Submissions</h2>
+                        <input type="text" id="teacher-search-results" oninput="renderResults('teacher-results-table')" placeholder="Filter submissions..." class="p-3 border rounded-2xl text-sm outline-none focus:ring-2 ring-indigo-500 w-full sm:w-64">
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
                             <thead class="bg-slate-50 text-slate-400 text-[11px] uppercase font-bold tracking-widest">
                                 <tr>
                                     <th class="p-5">Student</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortResults('teacher-results-table', 'studentId')">Student</th>
                                     <th class="p-5">Assessment</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortResults('teacher-results-table', 'examTitle')">Assessment</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortResults('teacher-results-table', 'studentClass')">Class</th>
                                     <th class="p-5">Final Score</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortResults('teacher-results-table', 'score')">Final Score</th>
                                     <th class="p-5">Timestamp</th>
+                                    <th class="p-5 cursor-pointer" onclick="sortResults('teacher-results-table', 'timestamp')">Timestamp</th>
                                 </tr>
                             </thead>
                             <tbody id="teacher-results-table" class="divide-y"></tbody>
@@ -297,7 +538,7 @@
                             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border-2 border-indigo-100 sticky top-28 text-center">
                                 <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Timer Running</h4>
                                 <div id="timer" class="text-5xl font-black text-slate-900 mb-6 tabular-nums tracking-tighter">00:00</div>
-                                <button onclick="studentSubmitExam()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-100 transition-all">Submit Now</button>
+                                <button onclick="studentConfirmSubmit()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-100 transition-all">Submit Now</button>
                                 <p class="mt-4 text-[10px] text-slate-400 font-medium">Do not close this tab or your progress will be lost.</p>
                             </div>
                         </div>
@@ -319,18 +560,30 @@
         let db = { users: [], exams: [], submissions: [] };
         let currentUser = null;
         let activeExam = null;
+        let activeExamStartedAt = null;
         let timerInterval = null;
+        
+        let currentAdminResultsSort = { column: 'timestamp', direction: 'desc' };
+        let currentTeacherResultsSort = { column: 'timestamp', direction: 'desc' };
+        let currentTeacherExamsSort = { column: 'title', direction: 'asc' };
+        let adminActiveClassView = null;
+        let adminActiveStudentProfile = null;
+        const SESSION_KEY = 'eduexam_session';
+        let transitionTimer = null;
 
         // --- DATABASE SYNC ---
         async function fetchState() {
+            document.querySelectorAll('.sync-icon').forEach(i => i.classList.add('animate-spin-custom'));
             try {
                 const res = await fetch(CLOUD.URL, { headers: { "X-Access-Key": CLOUD.API_KEY } });
                 const data = await res.json();
                 db = data.record || { users: [], exams: [], submissions: [] };
             } catch (err) { console.error("Cloud Error", err); }
+            document.querySelectorAll('.sync-icon').forEach(i => i.classList.remove('animate-spin-custom'));
         }
 
         async function saveState() {
+            document.querySelectorAll('.sync-icon').forEach(i => i.classList.add('animate-spin-custom'));
             try {
                 await fetch(CLOUD.URL, {
                     method: 'PUT',
@@ -338,6 +591,15 @@
                     body: JSON.stringify(db)
                 });
             } catch (err) { sysNotify("Sync failed. Check connection.", "Error", "❌"); }
+            document.querySelectorAll('.sync-icon').forEach(i => i.classList.remove('animate-spin-custom'));
+        }
+
+        async function syncDatabase() {
+            const text = document.getElementById('sync-text');
+            if(text) text.innerText = "Syncing...";
+            await fetchState();
+            if(currentUser) initPanel(currentUser.role);
+            if(text) text.innerText = "Sync Cloud";
         }
 
         // --- UI UTILS ---
@@ -368,37 +630,129 @@
             document.getElementById('sys-modal-backdrop').classList.remove('hidden');
         }
 
+        function persistSession(user) {
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+                id: user.id,
+                role: user.role,
+                class: user.class || null,
+                pfp: user.pfp || null
+            }));
+        }
+
+        function clearSession() {
+            sessionStorage.removeItem(SESSION_KEY);
+        }
+
+        function showAppForUser(user) {
+            currentUser = user;
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('nav-user-id').innerText = currentUser.id;
+            document.getElementById('nav-user-role').innerText = currentUser.role;
+
+            const pfp = currentUser.pfp || `https://ui-avatars.com/api/?name=${currentUser.id}`;
+            const navImg = document.getElementById('nav-user-pfp');
+            navImg.src = pfp; navImg.classList.remove('hidden');
+            const navImgMob = document.getElementById('nav-user-pfp-mobile');
+            navImgMob.src = pfp; navImgMob.classList.remove('hidden');
+
+            document.getElementById('nav-user-id-mobile').innerText = currentUser.id;
+            document.getElementById('nav-user-role-mobile').innerText = currentUser.role;
+            initPanel(currentUser.role);
+            hideTransitionOverlay();
+        }
+
+        function showTransitionOverlay(title = 'Loading', message = 'Please wait...') {
+            if (transitionTimer) {
+                clearTimeout(transitionTimer);
+                transitionTimer = null;
+            }
+            const overlay = document.getElementById('transition-overlay');
+            if (!overlay) return;
+            document.getElementById('transition-title').innerText = title;
+            document.getElementById('transition-message').innerText = message;
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex');
+        }
+
+        function hideTransitionOverlay() {
+            const overlay = document.getElementById('transition-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            overlay.classList.remove('flex');
+        }
+
+        function resetToLoginScreen() {
+            currentUser = null;
+            activeExam = null;
+            activeExamStartedAt = null;
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = null;
+
+            document.getElementById('app-container').classList.add('hidden');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('login-error').classList.add('hidden');
+            document.getElementById('mobile-menu').classList.add('hidden');
+            document.getElementById('nav-user-id').innerText = '';
+            document.getElementById('nav-user-role').innerText = '';
+            document.getElementById('nav-user-id-mobile').innerText = '';
+            document.getElementById('nav-user-role-mobile').innerText = '';
+            document.getElementById('nav-user-pfp').classList.add('hidden');
+            document.getElementById('nav-user-pfp-mobile').classList.add('hidden');
+            hideTransitionOverlay();
+        }
+
+        async function bootstrap() {
+            await fetchState();
+            const sessionRaw = sessionStorage.getItem(SESSION_KEY);
+            if (!sessionRaw) return;
+
+            try {
+                const sessionUser = JSON.parse(sessionRaw);
+                if (!sessionUser?.id || !sessionUser?.role) return;
+                const liveUser = db.users.find(u => u.id === sessionUser.id && u.role === sessionUser.role);
+                if (sessionUser.role !== 'admin' && !liveUser) return;
+                showTransitionOverlay('Restoring session', 'Opening your dashboard');
+                await new Promise(resolve => setTimeout(resolve, 350));
+                showAppForUser(liveUser ? { ...liveUser } : sessionUser);
+            } catch (err) {
+                console.error('Session restore failed', err);
+                hideTransitionOverlay();
+            }
+        }
+
+        function logout() {
+            clearSession();
+            showTransitionOverlay('Signing out', 'Returning to the main page');
+            transitionTimer = setTimeout(() => {
+                resetToLoginScreen();
+                transitionTimer = null;
+            }, 550);
+        }
+
         // --- AUTH ENGINE ---
         async function login() {
             const id = document.getElementById('login-id').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             if(!id || !pass) return;
 
+            showTransitionOverlay('Signing in', 'Loading your dashboard');
             await fetchState();
 
             // Default Admin Logic if Database is empty
             if (id === 'admin' && pass === 'admin123' && db.users.length === 0) {
-                currentUser = { id: 'admin', role: 'admin' };
+                currentUser = { id: 'admin', role: 'admin', class: null };
             } else {
                 currentUser = db.users.find(u => u.id === id && u.pass === pass);
             }
 
             if (currentUser) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
-                document.getElementById('nav-user-id').innerText = currentUser.id;
-                document.getElementById('nav-user-role').innerText = currentUser.role;
-                
-                const pfp = currentUser.pfp || `https://ui-avatars.com/api/?name=${currentUser.id}`;
-                const navImg = document.getElementById('nav-user-pfp');
-                navImg.src = pfp; navImg.classList.remove('hidden');
-                const navImgMob = document.getElementById('nav-user-pfp-mobile');
-                navImgMob.src = pfp; navImgMob.classList.remove('hidden');
-
-                document.getElementById('nav-user-id-mobile').innerText = currentUser.id;
-                document.getElementById('nav-user-role-mobile').innerText = currentUser.role;
-                initPanel(currentUser.role);
+                persistSession(currentUser);
+                await new Promise(resolve => setTimeout(resolve, 350));
+                showAppForUser(currentUser);
             } else {
+                hideTransitionOverlay();
                 document.getElementById('login-error').classList.remove('hidden');
             }
         }
@@ -411,10 +765,10 @@
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById(`panel-${role}`).classList.remove('hidden');
 
-            if (role === 'admin') { adminRefresh(); renderResults('admin-results-table'); }
+            if (role === 'admin') { adminRefresh(); }
             if (role === 'teacher') { 
                 teacherRefreshStats();
-                renderTeacherExams(); 
+                renderTeacherExams();
                 renderResults('teacher-results-table'); 
             }
             if (role === 'student') studentListExams();
@@ -423,10 +777,96 @@
         // --- ADMIN CONTROLS ---
         let editingUserId = null;
 
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatSeconds(seconds) {
+            if (!Number.isFinite(seconds) || seconds < 0 || seconds === Number.MAX_SAFE_INTEGER) return 'N/A';
+            const total = Math.max(0, Math.round(seconds));
+            const mins = Math.floor(total / 60);
+            const secs = total % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function getAssessmentKind(title = '') {
+            const text = String(title).toLowerCase();
+            if (text.includes('quiz')) return 'Quiz';
+            if (text.includes('assignment')) return 'Assignment';
+            if (text.includes('test')) return 'Test';
+            if (text.includes('exam')) return 'Exam';
+            return 'Assessment';
+        }
+
+        function getSubmissionMetrics(sub) {
+            const ex = db.exams.find(e => e.id === sub.examId);
+            if (!ex) return null;
+
+            let correct = 0;
+            sub.answers.forEach((a, i) => {
+                if (a === ex.questions[i]?.ans) correct++;
+            });
+
+            const totalQuestions = ex.questions.length || 0;
+            const percent = totalQuestions ? Math.round((correct / totalQuestions) * 100) : 0;
+            const timeTakenSeconds = Number.isFinite(sub.timeTakenSeconds)
+                ? sub.timeTakenSeconds
+                : (Number.isFinite(sub.startedAt) && Number.isFinite(sub.submittedAt)
+                    ? Math.max(1, Math.round((sub.submittedAt - sub.startedAt) / 1000))
+                    : (typeof ex.duration === 'number' ? ex.duration * 60 : Number.MAX_SAFE_INTEGER));
+
+            return {
+                studentId: sub.studentId,
+                examId: sub.examId,
+                examTitle: ex.title,
+                correct,
+                totalQuestions,
+                percent,
+                timeTakenSeconds,
+                displayTime: sub.time || '',
+                timestamp: sub.submittedAt || new Date(sub.time).getTime() || 0
+            };
+        }
+
+        function comparePerformance(a, b) {
+            if (!a && !b) return 0;
+            if (!a) return 1;
+            if (!b) return -1;
+            if (b.percent !== a.percent) return b.percent - a.percent;
+            if (a.timeTakenSeconds !== b.timeTakenSeconds) return a.timeTakenSeconds - b.timeTakenSeconds;
+            if (b.correct !== a.correct) return b.correct - a.correct;
+            return a.studentId.localeCompare(b.studentId);
+        }
+
+        function getStudentBestPerformance(studentId) {
+            return db.submissions
+                .map(getSubmissionMetrics)
+                .filter(p => p && p.studentId === studentId)
+                .sort(comparePerformance)[0] || null;
+        }
+
+        function getStudentAssessmentRecords(studentId) {
+            return db.submissions
+                .map(getSubmissionMetrics)
+                .filter(p => p && p.studentId === studentId)
+                .sort((a, b) => {
+                    if (b.percent !== a.percent) return b.percent - a.percent;
+                    if (a.timeTakenSeconds !== b.timeTakenSeconds) return a.timeTakenSeconds - b.timeTakenSeconds;
+                    if (b.timestamp !== a.timestamp) return b.timestamp - a.timestamp;
+                    return a.examTitle.localeCompare(b.examTitle);
+                });
+        }
+
         function adminSaveUser() {
             const id = document.getElementById('admin-new-id').value.trim();
             const pass = document.getElementById('admin-new-pass').value.trim();
             const role = document.getElementById('admin-new-role').value;
+            const userClass = document.getElementById('admin-new-class').value.trim();
 
             if(!id || !pass) return sysNotify("All fields required.", "Form Error", "❌");
 
@@ -436,13 +876,15 @@
                 if (userIndex !== -1) {
                     db.users[userIndex].pass = pass;
                     db.users[userIndex].role = role;
-                    db.users[userIndex].pfp = selectedPfpData;
+                    db.users[userIndex].pfp = selectedPfpData; // Assuming selectedPfpData is handled elsewhere
+                    if (role === 'student') db.users[userIndex].class = userClass;
+                    else db.users[userIndex].class = null;
                     sysNotify(`User ${id} updated successfully.`, "User Updated", "✅");
                 }
             } else {
                 // Add new user
                 if(db.users.find(u => u.id === id)) return sysNotify("User ID already exists.", "ID Error", "❌");
-                db.users.push({ id, pass, role, pfp: selectedPfpData });
+                db.users.push({ id, pass, role, pfp: selectedPfpData, class: (role === 'student' ? userClass : null) });
                 sysNotify(`User ${id} registered successfully.`, "User Registered", "✅");
             }
 
@@ -461,6 +903,12 @@
             document.getElementById('admin-new-id').classList.add('bg-slate-100');
             document.getElementById('admin-new-pass').value = user.pass;
             document.getElementById('admin-new-role').value = user.role;
+            document.getElementById('admin-new-class').value = user.class || '';
+            if (user.role === 'student') {
+                document.getElementById('admin-new-class').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-new-class').classList.add('hidden');
+            }
 
             selectedPfpData = user.pfp;
             if (user.pfp) {
@@ -481,12 +929,23 @@
             document.getElementById('admin-new-id').readOnly = false;
             document.getElementById('admin-new-id').classList.remove('bg-slate-100');
             document.getElementById('admin-new-pass').value = '';
-            document.getElementById('admin-new-role').value = 'student'; // Default role
+            document.getElementById('admin-new-role').value = 'student';
+            document.getElementById('admin-new-class').value = '';
+            document.getElementById('admin-new-class').classList.add('hidden');
             selectedPfpData = null;
             document.getElementById('pfp-preview').innerHTML = '<span class="text-[10px] text-slate-400 font-bold">PFP</span>';
             document.getElementById('admin-new-pfp').value = '';
             document.getElementById('admin-save-btn').innerText = "Register Account";
             document.getElementById('admin-cancel-edit-btn').classList.add('hidden');
+        }
+
+        function handleRoleChange() {
+            const role = document.getElementById('admin-new-role').value;
+            if (role === 'student') {
+                document.getElementById('admin-new-class').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-new-class').classList.add('hidden');
+            }
         }
 
         let selectedPfpData = null;
@@ -503,17 +962,80 @@
         }
 
         function adminRefresh() {
-            const t = db.users.filter(u => u.role === 'teacher'), s = db.users.filter(u => u.role === 'student');
+            const query = document.getElementById('admin-search-users')?.value.toLowerCase() || "";
+            const t = db.users.filter(u => u.role === 'teacher' && u.id.toLowerCase().includes(query));
+            const students = db.users.filter(u => u.role === 'student');
+            const classCounts = students.reduce((acc, u) => {
+                const studentClass = (u.class || '').trim();
+                if (studentClass) acc[studentClass] = (acc[studentClass] || 0) + 1;
+                return acc;
+            }, {});
+            const availableClasses = Object.keys(classCounts).sort((a, b) => a.localeCompare(b));
+            const filteredExams = db.exams.filter(ex => ex.title.toLowerCase().includes(query));
+
             document.getElementById('count-teachers').innerText = t.length;
-            document.getElementById('count-students').innerText = s.length;
-            document.getElementById('count-exams').innerText = db.exams.length;
+            document.getElementById('count-exams').innerText = filteredExams.length;
+            document.getElementById('count-top-classes').innerText = availableClasses.length;
+
+            const classButtons = availableClasses.map(cls => ({
+                label: cls,
+                value: cls,
+                count: classCounts[cls] || 0
+            }));
+
+            document.getElementById('admin-class-filters').innerHTML = classButtons.map(btn => {
+                const active = adminActiveClassView === btn.value;
+                const baseClasses = active
+                    ? 'bg-gradient-to-br from-indigo-600 to-slate-900 text-white border-indigo-600 shadow-xl shadow-indigo-100'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-200 hover:shadow-lg hover:-translate-y-0.5';
+                return `
+                    <button type="button" data-class-filter="${encodeURIComponent(btn.value)}" class="min-w-[220px] text-left px-5 py-4 rounded-[1.5rem] border text-sm font-bold transition-all flex items-center justify-between gap-4 whitespace-nowrap ${baseClasses}">
+                        <span class="min-w-0">
+                            <span class="block text-[11px] uppercase tracking-[0.25em] ${active ? 'text-indigo-100' : 'text-slate-400'}">Class Workspace</span>
+                            <span class="block text-base font-black truncate mt-1">${escapeHtml(btn.label)}</span>
+                        </span>
+                        <span class="shrink-0 text-[11px] font-black px-3 py-1 rounded-full ${active ? 'bg-white/15 text-white border border-white/20' : 'bg-slate-50 text-slate-500 border border-slate-200'}">${btn.count} Learners</span>
+                    </button>
+                `;
+            }).join('') || `<div class="text-sm text-slate-400 font-semibold">No student classes found yet.</div>`;
+            document.querySelectorAll('#admin-class-filters [data-class-filter]').forEach(button => {
+                button.onclick = () => openAdminClassPage(decodeURIComponent(button.dataset.classFilter || ''));
+            });
+
+            const classLeaders = availableClasses.map(cls => {
+                const classStudents = students.filter(u => (u.class || '').trim() === cls);
+                const ranked = classStudents
+                    .map(u => ({ user: u, best: getStudentBestPerformance(u.id) }))
+                    .sort((a, b) => comparePerformance(a.best, b.best));
+                return { className: cls, top: ranked[0] || null };
+            });
+
+            document.getElementById('admin-top-students').innerHTML = classLeaders.map(item => {
+                const topUser = item.top?.user;
+                const topBest = item.top?.best;
+                return `
+                    <div class="rounded-[1.4rem] border border-slate-200 bg-slate-50 p-4 flex items-center gap-4">
+                        <img src="${topUser?.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(topUser?.id || item.className)}" class="w-12 h-12 rounded-2xl border border-slate-200 object-cover shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="min-w-0">
+                                    <p class="text-[10px] uppercase tracking-[0.25em] text-slate-400 font-black">${escapeHtml(item.className)}</p>
+                                    <p class="font-black text-slate-900 truncate">${escapeHtml(topUser?.id || 'No submissions yet')}</p>
+                                </div>
+                                <span class="text-[11px] font-black px-3 py-1 rounded-full ${topBest ? 'bg-indigo-600 text-white' : 'bg-white text-slate-400 border border-slate-200'}">${topBest ? `${topBest.percent}%` : 'N/A'}</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-1">${topBest ? `Fastest best run: ${formatSeconds(topBest.timeTakenSeconds)}` : 'Waiting for first submission'}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('') || `<div class="rounded-[1.4rem] border border-slate-200 bg-slate-50 p-5 text-center text-slate-400 font-bold italic">No classes available yet.</div>`;
             
             document.getElementById('table-teachers').innerHTML = t.map(u => `
                 <tr class="hover:bg-slate-50 group">
                     <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.id)}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
-                            ${u.id}
+                            ${u.id} ${u.class ? `<span class="text-xs font-medium text-slate-500 ml-2">(${u.class})</span>` : ''}
                         </div>
                         <div class="flex items-center gap-1">
                             <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
@@ -523,23 +1045,7 @@
                         </button>
                     </td>
                 </tr>`).join('');
-            document.getElementById('table-students').innerHTML = s.map(u => `
-                <tr class="hover:bg-slate-50 group">
-                    <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.id)}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
-                            ${u.id}
-                        </div>
-                        <div class="flex items-center gap-1">
-                            <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-indigo-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
-                        </div>
-                        <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
-                    </td>
-                </tr>`).join('');
-            
-            document.getElementById('table-exams').innerHTML = db.exams.map(ex => `
+            document.getElementById('table-exams').innerHTML = filteredExams.map(ex => `
                 <tr class="hover:bg-slate-50 group">
                     <td class="p-4 font-bold text-slate-700 flex justify-between items-center">
                         <span class="truncate mr-2">${ex.title}</span>
@@ -548,6 +1054,193 @@
                         </button>
                     </td>
                 </tr>`).join('');
+
+            if (adminActiveClassView) {
+                renderAdminClassPage();
+            }
+        }
+
+        function openAdminClassPage(className) {
+            adminActiveClassView = className || null;
+            document.getElementById('admin-overview')?.classList.add('hidden');
+            document.getElementById('admin-class-page')?.classList.remove('hidden');
+            document.getElementById('admin-student-profile-page')?.classList.add('hidden');
+            adminActiveStudentProfile = null;
+            const search = document.getElementById('admin-class-search');
+            if (search) search.value = '';
+            renderAdminClassPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeAdminClassPage() {
+            adminActiveClassView = null;
+            document.getElementById('admin-class-page')?.classList.add('hidden');
+            document.getElementById('admin-overview')?.classList.remove('hidden');
+            document.getElementById('admin-student-profile-page')?.classList.add('hidden');
+            adminActiveStudentProfile = null;
+            adminRefresh();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openAdminStudentProfile(studentId) {
+            adminActiveStudentProfile = studentId;
+            document.getElementById('admin-class-page')?.classList.add('hidden');
+            document.getElementById('admin-student-profile-page')?.classList.remove('hidden');
+            renderAdminStudentProfile();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function closeAdminStudentProfile() {
+            adminActiveStudentProfile = null;
+            document.getElementById('admin-student-profile-page')?.classList.add('hidden');
+            document.getElementById('admin-class-page')?.classList.remove('hidden');
+            renderAdminClassPage();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderAdminClassPage() {
+            if (!adminActiveClassView) return;
+
+            const query = document.getElementById('admin-class-search')?.value.toLowerCase() || "";
+            const classSubmissions = db.submissions.filter(sub => {
+                const student = db.users.find(u => u.id === sub.studentId);
+                return student && (student.class || '').trim() === adminActiveClassView;
+            });
+            const students = db.users.filter(u => {
+                return u.role === 'student'
+                    && (u.class || '').trim() === adminActiveClassView
+                    && u.id.toLowerCase().includes(query);
+            });
+            const rankedStudents = students
+                .map(u => ({ user: u, best: getStudentBestPerformance(u.id) }))
+                .sort((a, b) => comparePerformance(a.best, b.best));
+            const topEntry = rankedStudents[0] || null;
+            const classBest = rankedStudents.find(entry => entry.best) || null;
+
+            document.getElementById('admin-class-page-title').innerText = `${adminActiveClassView} Class`;
+            document.getElementById('admin-class-page-label').innerText = adminActiveClassView;
+            document.getElementById('admin-class-page-count').innerText = students.length;
+            document.getElementById('admin-class-top-student').innerText = topEntry?.user?.id || 'N/A';
+            document.getElementById('admin-class-top-student-meta').innerText = topEntry?.best
+                ? `${topEntry.best.percent}% in ${formatSeconds(topEntry.best.timeTakenSeconds)}`
+                : 'No submissions yet';
+            document.getElementById('admin-class-best-performance').innerText = classBest?.best
+                ? `${classBest.best.percent}%`
+                : 'N/A';
+            document.getElementById('admin-class-best-performance-meta').innerText = classBest?.best
+                ? `${classBest.user.id} | ${formatSeconds(classBest.best.timeTakenSeconds)}`
+                : 'Waiting for results';
+
+            document.getElementById('admin-class-page-table').innerHTML = rankedStudents.map((entry, index) => {
+                const { user: u, best } = entry;
+                const studentSubs = classSubmissions.filter(sub => sub.studentId === u.id);
+                const lastSubmission = studentSubs.length
+                    ? [...studentSubs].sort((a, b) => (b.submittedAt || new Date(b.time).getTime() || 0) - (a.submittedAt || new Date(a.time).getTime() || 0))[0]?.time
+                    : null;
+                return `
+                    <div onclick="openAdminStudentProfile('${u.id}')" class="group cursor-pointer rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                        <div class="flex items-start gap-4">
+                            <div class="relative shrink-0">
+                                <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.id)}" class="w-14 h-14 rounded-2xl border border-slate-200 object-cover">
+                                <span class="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-slate-900 text-white text-[11px] font-black flex items-center justify-center border-2 border-white">${index + 1}</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="min-w-0">
+                                        <h3 class="text-lg font-black text-slate-900 truncate">${u.id}</h3>
+                                        <p class="text-sm text-slate-500 font-medium">${u.class || 'N/A'}</p>
+                                    </div>
+                                    <span class="text-[11px] font-black uppercase tracking-widest ${best ? 'bg-indigo-50 text-indigo-600 border-indigo-100' : 'bg-slate-100 text-slate-400 border-slate-200'} px-3 py-1 rounded-full border">${best ? `${best.percent}%` : 'No score'}</span>
+                                </div>
+
+                                <div class="mt-5 grid grid-cols-2 gap-3">
+                                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Best Score</p>
+                                        <p class="text-lg font-black text-slate-900 mt-1">${best ? `${best.percent}%` : 'N/A'}</p>
+                                    </div>
+                                    <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Best Time</p>
+                                        <p class="text-lg font-black text-slate-900 mt-1">${best ? formatSeconds(best.timeTakenSeconds) : 'N/A'}</p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                                    <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Last Seen</p>
+                                    <p class="text-sm font-bold text-slate-700 mt-1">${lastSubmission || 'No submissions yet'}</p>
+                                </div>
+
+                                <div class="mt-5 flex flex-wrap gap-2">
+                                    <button onclick="event.stopPropagation(); adminEditUser('${u.id}')" class="px-4 py-2 rounded-xl text-sm font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition">
+                                        Edit Learner
+                                    </button>
+                                    <button onclick="event.stopPropagation(); adminDeleteUser('${u.id}')" class="px-4 py-2 rounded-xl text-sm font-bold bg-red-50 text-red-600 hover:bg-red-100 transition">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('') || `<div class="col-span-full p-10 text-center text-slate-400 font-bold italic bg-slate-50 rounded-[1.5rem] border border-slate-200">No learners found in this class.</div>`;
+        }
+
+        function renderAdminStudentProfile() {
+            if (!adminActiveStudentProfile) return;
+
+            const student = db.users.find(u => u.id === adminActiveStudentProfile);
+            if (!student) {
+                closeAdminStudentProfile();
+                return;
+            }
+
+            const records = getStudentAssessmentRecords(student.id);
+            const total = records.length;
+            const avg = total ? Math.round(records.reduce((sum, r) => sum + r.percent, 0) / total) : 0;
+            const best = records[0] || null;
+            const latest = total ? [...records].sort((a, b) => b.timestamp - a.timestamp)[0] : null;
+
+            document.getElementById('admin-profile-pfp').src = student.pfp || `https://ui-avatars.com/api/?name=${encodeURIComponent(student.id)}`;
+            document.getElementById('admin-profile-name').innerText = student.id;
+            document.getElementById('admin-profile-class').innerText = student.class ? `Class: ${student.class}` : 'Class: N/A';
+            document.getElementById('admin-profile-total').innerText = total;
+            document.getElementById('admin-profile-average').innerText = `${avg}%`;
+            document.getElementById('admin-profile-best-score').innerText = best ? `${best.percent}%` : '-';
+            document.getElementById('admin-profile-best-score-meta').innerText = best ? `${best.examTitle} | ${best.correct}/${best.totalQuestions}` : 'No submissions yet';
+            document.getElementById('admin-profile-best-time').innerText = best ? formatSeconds(best.timeTakenSeconds) : '-';
+            document.getElementById('admin-profile-best-time-meta').innerText = best ? `${best.examTitle} | best performance` : 'Score and time';
+
+            document.getElementById('admin-profile-records').innerHTML = records.map((record, idx) => `
+                <div class="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm">
+                    <div class="flex items-start justify-between gap-4 mb-4">
+                        <div>
+                            <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400 font-black">Assessment ${idx + 1}</p>
+                            <h4 class="text-xl font-black text-slate-900 mt-1">${record.examTitle}</h4>
+                        </div>
+                        <div class="flex flex-col items-end gap-2">
+                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">${getAssessmentKind(record.examTitle)}</span>
+                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-slate-900 text-white">${record.percent}%</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Score</p>
+                            <p class="text-lg font-black text-slate-900 mt-1">${record.correct}/${record.totalQuestions}</p>
+                        </div>
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Time</p>
+                            <p class="text-lg font-black text-slate-900 mt-1">${formatSeconds(record.timeTakenSeconds)}</p>
+                        </div>
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 col-span-2">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Submitted</p>
+                            <p class="text-sm font-bold text-slate-700 mt-1">${record.displayTime || 'N/A'}</p>
+                        </div>
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 col-span-2">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">How he did</p>
+                            <p class="text-sm font-bold text-slate-700 mt-1">${record.percent}% | ${record.correct} correct in ${formatSeconds(record.timeTakenSeconds)}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || `<div class="col-span-full rounded-[1.5rem] border border-slate-200 bg-slate-50 p-10 text-center text-slate-400 font-bold italic">No assessment records for this student yet.</div>`;
         }
 
         function adminDeleteUser(userId) {
@@ -560,13 +1253,35 @@
             });
         }
 
+        async function removeAssessmentById(examId) {
+            db.exams = db.exams.filter(e => e.id !== examId);
+            db.submissions = db.submissions.filter(s => s.examId !== examId);
+            await saveState();
+        }
+
         function adminDeleteExam(examId) {
             sysConfirm("Warning: Deleting this assessment will also remove all student results associated with it. Proceed?", () => {
-                db.exams = db.exams.filter(e => e.id !== examId);
-                db.submissions = db.submissions.filter(s => s.examId !== examId);
-                saveState();
-                adminRefresh();
-                renderResults('admin-results-table');
+                void (async () => {
+                    await removeAssessmentById(examId);
+                    adminRefresh();
+                })();
+            });
+        }
+
+        function teacherDeleteExam(examId) {
+            const ex = db.exams.find(e => e.id === examId);
+            if (!ex) return sysNotify("Assessment not found.", "Error", "X");
+            if (ex.author !== currentUser.id) return sysNotify("You can only delete your own assessments.", "Access Denied", "!");
+
+            sysConfirm("Deleting this assessment will also remove all student results associated with it. Proceed?", () => {
+                void (async () => {
+                    const wasEditing = editingExamId === examId;
+                    await removeAssessmentById(examId);
+                    if (wasEditing) teacherResetForm();
+                    teacherRefreshStats();
+                    renderTeacherExams();
+                    renderResults('teacher-results-table');
+                })();
             });
         }
 
@@ -584,14 +1299,15 @@
 
             const tableData = db.submissions.map(sub => {
                 const ex = db.exams.find(e => e.id === sub.examId);
+                const student = db.users.find(u => u.id === sub.studentId);
                 let correct = 0; 
                 if(ex) sub.answers.forEach((a, i) => { if(a === ex.questions[i].ans) correct++; });
-                return [sub.studentId, ex ? ex.title : 'N/A', ex ? `${correct}/${ex.questions.length}` : 'N/A', sub.time];
+                return [sub.studentId, ex ? ex.title : 'N/A', student ? student.class : 'N/A', ex ? `${correct}/${ex.questions.length}` : 'N/A', sub.time];
             });
 
             doc.autoTable({
                 startY: 40,
-                head: [['Student ID', 'Assessment', 'Score', 'Timestamp']],
+                head: [['Student ID', 'Assessment', 'Class', 'Score', 'Timestamp']],
                 body: tableData,
                 headStyles: { fillColor: [79, 70, 229], fontStyle: 'bold' },
                 alternateRowStyles: { fillColor: [248, 250, 252] }
@@ -641,25 +1357,78 @@
 
         function renderResults(tid) {
             const table = document.getElementById(tid);
-            table.innerHTML = db.submissions.map((sub, idx) => {
+            if (!table) return;
+            const searchId = tid === 'admin-results-table' ? 'admin-search-results' : 'teacher-search-results';
+            const query = document.getElementById(searchId)?.value.toLowerCase() || "";
+            
+            let filteredSubmissions = db.submissions.map((sub, idx) => {
                 const ex = db.exams.find(e => e.id === sub.examId);
-                if(!ex) return "";
+                if(!ex) return null;
                 
                 // Filter for teacher panel to show only their own assessments
-                if (tid === 'teacher-results-table' && ex.author !== currentUser.id) return "";
+                if (tid === 'teacher-results-table' && ex.author !== currentUser.id) return null;
+
+                const student = db.users.find(u => u.id === sub.studentId);
+                const studentClass = student ? student.class : 'N/A';
+
+                // Search Filter
+                if (query && !sub.studentId.toLowerCase().includes(query) && !ex.title.toLowerCase().includes(query) && !studentClass.toLowerCase().includes(query)) return null;
 
                 let correct = 0; sub.answers.forEach((a, i) => { if(a === ex.questions[i].ans) correct++; });
                 const percent = Math.round((correct / ex.questions.length) * 100);
 
-                return `
-                    <tr class="hover:bg-indigo-50 cursor-pointer group transition" onclick="openReview(${idx})">
-                        <td class="p-5 font-black text-indigo-600 underline-offset-4 group-hover:underline">${sub.studentId}</td>
-                        <td class="p-5 font-bold text-slate-600">${ex.title}</td>
-                        <td class="p-5 font-black text-slate-900">${correct}/${ex.questions.length} <span class="text-[10px] text-slate-400 font-medium ml-1">(${percent}%)</span></td>
-                        <td class="p-5 text-xs text-slate-400 font-medium">${sub.time}</td>
-                    </tr>
-                `;
-            }).reverse().join('') || `<tr><td colspan="4" class="p-10 text-center text-slate-400 font-bold italic">No data synced yet.</td></tr>`;
+                return {
+                    originalIndex: idx,
+                    studentId: sub.studentId,
+                    examTitle: ex.title,
+                    studentClass: studentClass,
+                    score: correct,
+                    totalQuestions: ex.questions.length,
+                    percent: percent,
+                    timestamp: new Date(sub.time).getTime(),
+                    displayTime: sub.time
+                };
+            }).filter(Boolean);
+
+            let currentSort = tid === 'admin-results-table' ? currentAdminResultsSort : currentTeacherResultsSort;
+
+            filteredSubmissions.sort((a, b) => {
+                let valA, valB;
+                switch (currentSort.column) {
+                    case 'studentId': valA = a.studentId; valB = b.studentId; break;
+                    case 'examTitle': valA = a.examTitle; valB = b.examTitle; break;
+                    case 'studentClass': valA = a.studentClass; valB = b.studentClass; break;
+                    case 'score': valA = a.percent; valB = b.percent; break;
+                    case 'timestamp': valA = a.timestamp; valB = b.timestamp; break;
+                    default: return 0;
+                }
+                if (typeof valA === 'string') {
+                    return currentSort.direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    return currentSort.direction === 'asc' ? valA - valB : valB - valA;
+                }
+            });
+
+            table.innerHTML = filteredSubmissions.map(data => `
+                <tr class="hover:bg-indigo-50 cursor-pointer group transition" onclick="openReview(${data.originalIndex})">
+                    <td class="p-5 font-black text-indigo-600 underline-offset-4 group-hover:underline">${data.studentId}</td>
+                    <td class="p-5 font-bold text-slate-600">${data.examTitle}</td>
+                    <td class="p-5 text-slate-500">${data.studentClass}</td>
+                    <td class="p-5 font-black text-slate-900">${data.score}/${data.totalQuestions} <span class="text-[10px] text-slate-400 font-medium ml-1">(${data.percent}%)</span></td>
+                    <td class="p-5 text-xs text-slate-400 font-medium">${data.displayTime}</td>
+                </tr>
+            `).join('') || `<tr><td colspan="5" class="p-10 text-center text-slate-400 font-bold italic">No data synced yet.</td></tr>`;
+        }
+
+        function sortResults(tableId, column) {
+            let currentSort = tableId === 'admin-results-table' ? currentAdminResultsSort : currentTeacherResultsSort;
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = 'asc';
+            }
+            renderResults(tableId);
         }
 
         // --- TEACHER ENGINE ---
@@ -676,20 +1445,53 @@
 
         function renderTeacherExams() {
             const table = document.getElementById('teacher-exams-table');
-            const myExams = db.exams.filter(ex => ex.author === currentUser.id);
+            const query = document.getElementById('teacher-search-exams')?.value.toLowerCase() || "";
+            let myExams = db.exams.filter(ex => ex.author === currentUser.id && (ex.title.toLowerCase().includes(query) || (ex.class && ex.class.toLowerCase().includes(query))));
             
+            myExams.sort((a, b) => {
+                let valA, valB;
+                switch (currentTeacherExamsSort.column) {
+                    case 'title': valA = a.title; valB = b.title; break;
+                    case 'class': valA = a.class || ''; valB = b.class || ''; break;
+                    case 'questions': valA = a.questions.length; valB = b.questions.length; break;
+                    case 'duration': valA = a.duration; valB = b.duration; break;
+                    default: return 0;
+                }
+                if (typeof valA === 'string') {
+                    return currentTeacherExamsSort.direction === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    return currentTeacherExamsSort.direction === 'asc' ? valA - valB : valB - valA;
+                }
+            });
+
             table.innerHTML = myExams.map(ex => `
                 <tr class="hover:bg-slate-50 group">
                     <td class="p-5 font-bold text-slate-700">${ex.title}</td>
+                    <td class="p-5 text-slate-500">${ex.class || 'N/A'}</td>
                     <td class="p-5 text-slate-500">${ex.questions.length} Items</td>
                     <td class="p-5 text-slate-500">${ex.duration}m</td>
                     <td class="p-5 text-right">
-                        <button onclick="teacherEditExam('${ex.id}')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">
-                            Edit Exam
-                        </button>
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="teacherEditExam('${ex.id}')" class="bg-indigo-50 text-indigo-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 transition">
+                                Edit
+                            </button>
+                            <button onclick="teacherDeleteExam('${ex.id}')" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition">
+                                Delete
+                            </button>
+                        </div>
                     </td>
                 </tr>
-            `).join('') || `<tr><td colspan="4" class="p-10 text-center text-slate-400 italic">No exams published yet.</td></tr>`;
+            `).join('') || `<tr><td colspan="5" class="p-10 text-center text-slate-400 italic">No exams published yet.</td></tr>`;
+        }
+
+        function sortTeacherExams(column) {
+            if (currentTeacherExamsSort.column === column) {
+                currentTeacherExamsSort.direction = currentTeacherExamsSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentTeacherExamsSort.column = column;
+                currentTeacherExamsSort.direction = 'asc';
+            }
+            renderTeacherExams();
         }
 
         function teacherEditExam(examId) {
@@ -699,6 +1501,7 @@
             editingExamId = examId;
             document.getElementById('teacher-exam-title').value = ex.title;
             document.getElementById('teacher-exam-duration').value = ex.duration;
+            document.getElementById('teacher-exam-class').value = ex.class || '';
             const csv = ex.questions.map(q => `${q.q},${q.options.join(',')},${q.ans}`).join('\n');
             document.getElementById('teacher-exam-csv').value = csv;
             
@@ -712,6 +1515,7 @@
             editingExamId = null;
             document.getElementById('teacher-exam-title').value = '';
             document.getElementById('teacher-exam-duration').value = '30';
+            document.getElementById('teacher-exam-class').value = '';
             document.getElementById('teacher-exam-csv').value = '';
             document.getElementById('teacher-form-title').innerText = "Create Assessment";
             document.getElementById('teacher-submit-btn').innerText = "PUBLISH TO CLOUD";
@@ -722,8 +1526,9 @@
             const title = document.getElementById('teacher-exam-title').value.trim();
             const dur = document.getElementById('teacher-exam-duration').value;
             const csv = document.getElementById('teacher-exam-csv').value.trim();
+            const examClass = document.getElementById('teacher-exam-class').value.trim();
 
-            if(!title || !csv) return;
+            if(!title || !csv || !examClass) return sysNotify("All fields required.", "Form Error", "❌");
 
             const questions = csv.split('\n').map(line => {
                 const p = line.split(',');
@@ -732,19 +1537,26 @@
 
             if (editingExamId) {
                 const idx = db.exams.findIndex(e => e.id === editingExamId);
-                db.exams[idx] = { ...db.exams[idx], title, duration: dur, questions };
+                db.exams[idx] = { ...db.exams[idx], title, duration: dur, questions, class: examClass };
             } else {
-                db.exams.push({ id: "EX"+Date.now(), title, duration: dur, questions, author: currentUser.id });
+                db.exams.push({ id: "EX"+Date.now(), title, duration: dur, questions, author: currentUser.id, class: examClass });
             }
 
             await saveState();
-            sysNotify("Assessment successfully pushed to students.", "Cloud Synced", "✅", () => location.reload());
+            sysNotify("Assessment successfully pushed to students.", "Cloud Synced", "✅", () => {
+                teacherRefreshStats();
+                renderTeacherExams();
+                teacherResetForm();
+            });
         }
 
         // --- STUDENT ENGINE ---
         function studentListExams() {
             const list = document.getElementById('student-exam-list');
-            list.innerHTML = db.exams.map(ex => {
+            const studentClass = currentUser.class;
+            const availableExams = db.exams.filter(ex => ex.class === studentClass);
+
+            list.innerHTML = availableExams.map(ex => {
                 const done = db.submissions.some(s => s.examId === ex.id && s.studentId === currentUser.id);
                 return `
                     <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-transparent hover:border-indigo-500 transition-all group">
@@ -752,7 +1564,7 @@
                             <h3 class="text-2xl font-black text-slate-800">${ex.title}</h3>
                             <span class="bg-slate-100 text-slate-400 p-2 rounded-xl">📝</span>
                         </div>
-                        <p class="text-slate-500 font-medium mb-8">${ex.questions.length} Problems • ${ex.duration} Minutes</p>
+                        <p class="text-slate-500 font-medium mb-8">${ex.questions.length} Problems • ${ex.duration} Minutes • Class: ${ex.class}</p>
                         <button onclick="studentStartExam('${ex.id}')" ${done ? 'disabled' : ''} 
                             class="w-full py-4 rounded-2xl font-bold transition-all ${done ? 'bg-slate-50 text-slate-300' : 'bg-indigo-600 text-white shadow-lg group-hover:scale-[1.02]'}">
                             ${done ? 'Completed' : 'Begin Assessment'}
@@ -764,6 +1576,7 @@
 
         function studentStartExam(id) {
             activeExam = db.exams.find(e => e.id === id);
+            activeExamStartedAt = Date.now();
             document.getElementById('student-exam-list').classList.add('hidden');
             document.getElementById('student-exam-interface').classList.remove('hidden');
 
@@ -791,24 +1604,41 @@
             }, 1000);
         }
 
+        function studentConfirmSubmit() {
+            sysConfirm("Are you sure you want to submit your assessment? This action cannot be undone.", () => {
+                studentSubmitExam();
+            });
+        }
+
         async function studentSubmitExam() {
             clearInterval(timerInterval);
+            const startedAt = activeExamStartedAt || Date.now();
+            const submittedAt = Date.now();
+            const timeTakenSeconds = Math.max(1, Math.round((submittedAt - startedAt) / 1000));
             const ans = activeExam.questions.map((_, i) => document.querySelector(`input[name="q${i}"]:checked`)?.value || null);
             db.submissions.push({
                 studentId: currentUser.id,
                 examId: activeExam.id,
                 answers: ans,
-                time: new Date().toLocaleString()
+                startedAt: startedAt,
+                submittedAt: submittedAt,
+                timeTakenSeconds: timeTakenSeconds,
+                time: new Date(submittedAt).toLocaleString()
             });
             await saveState();
-            sysNotify("Submission complete. You can now view your results with your teacher.", "Assessment Finished", "🎓", () => location.reload());
+            sysNotify("Submission complete. You can now view your results with your teacher.", "Assessment Finished", "🎓", () => {
+                document.getElementById('student-exam-interface').classList.add('hidden');
+                document.getElementById('student-exam-list').classList.remove('hidden');
+                studentListExams();
+                activeExamStartedAt = null;
+            });
         }
 
-        window.onload = fetchState;
+        window.onload = bootstrap;
     </script>
 
     <footer class="py-12 flex flex-col items-center justify-center gap-2 border-t border-slate-100 mt-10">
-        <img src="logo.png" alt="Raazim Tech Logo" class="h-6 grayscale opacity-40 hover:opacity-100 transition-opacity">
+        <img src="raazim logo.png" alt="Raazim Tech Logo" class="h-6 grayscale opacity-40 hover:opacity-100 transition-opacity">
         <p class="text-slate-400 text-[10px] font-black tracking-widest uppercase">Made by Raazim Tech</p>
     </footer>
 </body>
