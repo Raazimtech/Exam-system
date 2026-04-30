@@ -314,7 +314,7 @@
                                 <option value="teacher">Teacher</option>
                                 <option value="admin">Admin</option>
                             </select>
-                            <select id="admin-new-class" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500 hidden">
+                            <select id="admin-new-class" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-indigo-500">
                                 <option value="" disabled selected>Select Class</option>
                                 <option value="Sophomore Software Eng">Sophomore Software Eng</option>
                                 <option value="Junior Software Eng">Junior Software Eng</option>
@@ -386,6 +386,9 @@
                                         <p class="mt-4 text-indigo-100 max-w-xl leading-relaxed">This page shows only one class at a time, with a clean workspace for managing learners, no cross-class mixing, and direct edit or delete actions.</p>
                                     </div>
                                     <div class="flex flex-wrap gap-3">
+                                        <button onclick="publishClassResults()" id="admin-class-publish-btn" class="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl text-sm font-bold transition border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            Upload Class Results
+                                        </button>
                                         <button onclick="closeAdminClassPage()" class="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl text-sm font-bold transition border border-white/20">
                                             Back to Overview
                                         </button>
@@ -475,10 +478,10 @@
                             </div>
 
                             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-4">
-                                <div>
-                                    <h3 class="text-2xl font-black text-slate-900">Assessment Records</h3>
-                                    <p class="text-sm text-slate-500 font-medium">Sorted by score first, then lowest time.</p>
-                                </div>
+                            <div>
+                                <h3 class="text-2xl font-black text-slate-900">Assessment Records</h3>
+                                <p class="text-sm text-slate-500 font-medium">Sorted by score first, then lowest time. Tap a card for the full breakdown and feedback.</p>
+                            </div>
                                 <div class="bg-slate-50 px-4 py-2 rounded-full border border-slate-200 text-xs font-bold uppercase tracking-widest text-slate-500">
                                     No mixing
                                 </div>
@@ -539,7 +542,7 @@
                             <textarea id="teacher-exam-csv" rows="6" class="w-full p-5 bg-slate-900 text-emerald-400 font-mono text-sm rounded-3xl" placeholder="Sample: What is 2+2,3,4,5,6,4"></textarea>
                         </div>
                         <div class="flex gap-4">
-                            <button onclick="teacherSaveExam()" id="teacher-submit-btn" class="flex-1 bg-indigo-600 text-white py-5 rounded-[1.5rem] font-black text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all">PUBLISH TO CLOUD</button>
+                            <button onclick="teacherSaveExam()" id="teacher-submit-btn" class="flex-1 bg-indigo-600 text-white py-5 rounded-[1.5rem] font-black text-lg hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed">PUBLISH TO CLOUD</button>
                             <button onclick="teacherResetForm()" id="teacher-cancel-edit" class="hidden px-8 bg-slate-100 text-slate-600 py-5 rounded-[1.5rem] font-bold hover:bg-slate-200 transition-all">Cancel</button>
                         </div>
                     </div>
@@ -593,6 +596,20 @@
             </section>
 
             <section id="panel-student" class="hidden fade-in">
+                <div id="student-results-panel" class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm mb-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div>
+                            <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">My Results</p>
+                            <h2 class="text-2xl font-extrabold text-slate-900">Only your class assignments</h2>
+                            <p class="text-sm text-slate-500 font-medium">See your score, the questions you missed, and any admin feedback.</p>
+                        </div>
+                        <button onclick="renderStudentResults()" class="px-4 py-3 rounded-xl bg-slate-100 text-slate-600 text-sm font-bold hover:bg-slate-200 transition">
+                            Refresh Results
+                        </button>
+                    </div>
+                    <div id="student-results-summary" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6"></div>
+                    <div id="student-results-list" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
+                </div>
                 <div id="student-exam-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
                 
                 <div id="student-exam-interface" class="hidden">
@@ -602,7 +619,7 @@
                             <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border-2 border-indigo-100 sticky top-28 text-center">
                                 <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Timer Running</h4>
                                 <div id="timer" class="text-5xl font-black text-slate-900 mb-6 tabular-nums tracking-tighter">00:00</div>
-                                <button onclick="studentConfirmSubmit()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-100 transition-all">Submit Now</button>
+                                <button onclick="studentConfirmSubmit()" id="student-submit-btn" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-emerald-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed">Submit Now</button>
                                 <p class="mt-4 text-[10px] text-slate-400 font-medium">Do not close this tab or your progress will be lost.</p>
                             </div>
                         </div>
@@ -632,6 +649,7 @@
         let currentTeacherExamsSort = { column: 'title', direction: 'asc' };
         let adminActiveClassView = null;
         let adminActiveStudentProfile = null;
+        let cloudActionBusy = false;
         const SESSION_KEY = 'eduexam_session';
         let transitionTimer = null;
 
@@ -646,16 +664,32 @@
             document.querySelectorAll('.sync-icon').forEach(i => i.classList.remove('animate-spin-custom'));
         }
 
-        async function saveState() {
+        async function saveState(options = {}) {
+            const {
+                showLoading = false,
+                loadingTitle = 'Saving to cloud',
+                loadingMessage = 'Uploading your changes...',
+                silentError = false
+            } = options;
+
+            if (showLoading) showTransitionOverlay(loadingTitle, loadingMessage);
             document.querySelectorAll('.sync-icon').forEach(i => i.classList.add('animate-spin-custom'));
             try {
-                await fetch(CLOUD.URL, {
+                const res = await fetch(CLOUD.URL, {
                     method: 'PUT',
                     headers: { "Content-Type": "application/json", "X-Access-Key": CLOUD.API_KEY },
                     body: JSON.stringify(db)
                 });
-            } catch (err) { sysNotify("Sync failed. Check connection.", "Error", "❌"); }
-            document.querySelectorAll('.sync-icon').forEach(i => i.classList.remove('animate-spin-custom'));
+                if (!res.ok) throw new Error(`Cloud save failed (${res.status})`);
+                return true;
+            } catch (err) {
+                console.error("Cloud Error", err);
+                if (!silentError) sysNotify("Sync failed. Check connection.", "Error", "❌");
+                return false;
+            } finally {
+                document.querySelectorAll('.sync-icon').forEach(i => i.classList.remove('animate-spin-custom'));
+                if (showLoading) hideTransitionOverlay();
+            }
         }
 
         async function syncDatabase() {
@@ -842,7 +876,10 @@
                 renderTeacherExams();
                 renderResults('teacher-results-table'); 
             }
-            if (role === 'student') studentListExams();
+            if (role === 'student') {
+                renderStudentResults();
+                studentListExams();
+            }
         }
 
         // --- ADMIN CONTROLS ---
@@ -874,16 +911,29 @@
             return 'Assessment';
         }
 
-        function getSubmissionMetrics(sub) {
+        function getSubmissionMetrics(sub, submissionIndex = null) {
             const ex = db.exams.find(e => e.id === sub.examId);
             if (!ex) return null;
+            const student = db.users.find(u => u.id === sub.studentId);
 
-            let correct = 0;
-            sub.answers.forEach((a, i) => {
-                if (a === ex.questions[i]?.ans) correct++;
+            const reviewItems = ex.questions.map((q, i) => {
+                const studentAnswer = sub.answers?.[i] ?? null;
+                const correctAnswer = q?.ans ?? null;
+                const isCorrect = studentAnswer === correctAnswer;
+                return {
+                    index: i,
+                    question: q?.q || '',
+                    options: Array.isArray(q?.options) ? q.options : [],
+                    studentAnswer,
+                    correctAnswer,
+                    isCorrect
+                };
             });
 
-            const totalQuestions = ex.questions.length || 0;
+            const correct = reviewItems.filter(item => item.isCorrect).length;
+            const wrongQuestions = reviewItems.filter(item => !item.isCorrect);
+
+            const totalQuestions = reviewItems.length || 0;
             const percent = totalQuestions ? Math.round((correct / totalQuestions) * 100) : 0;
             const timeTakenSeconds = Number.isFinite(sub.timeTakenSeconds)
                 ? sub.timeTakenSeconds
@@ -892,15 +942,21 @@
                     : (typeof ex.duration === 'number' ? ex.duration * 60 : Number.MAX_SAFE_INTEGER));
 
             return {
+                originalIndex: submissionIndex,
                 studentId: sub.studentId,
                 examId: sub.examId,
                 examTitle: ex.title,
+                studentClass: student?.class || 'N/A',
                 correct,
                 totalQuestions,
                 percent,
                 timeTakenSeconds,
                 displayTime: sub.time || '',
-                timestamp: sub.submittedAt || new Date(sub.time).getTime() || 0
+                timestamp: sub.submittedAt || new Date(sub.time).getTime() || 0,
+                reviewItems,
+                wrongQuestions,
+                answeredCount: reviewItems.filter(item => item.studentAnswer !== null && item.studentAnswer !== '').length,
+                adminNote: sub.adminNote || ''
             };
         }
 
@@ -1169,6 +1225,36 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        async function publishClassResults() {
+            if (!adminActiveClassView || cloudActionBusy) return;
+
+            const classSubmissions = db.submissions.filter(sub => {
+                const student = db.users.find(u => u.id === sub.studentId);
+                return student && (student.class || '').trim() === adminActiveClassView;
+            });
+
+            cloudActionBusy = true;
+            renderAdminClassPage();
+
+            try {
+                const saved = await saveState({
+                    showLoading: true,
+                    loadingTitle: 'Publishing class results',
+                    loadingMessage: `Uploading ${classSubmissions.length} result(s) for ${adminActiveClassView}...`,
+                    silentError: true
+                });
+
+                if (!saved) {
+                    return sysNotify('Class results could not be uploaded to the cloud.', 'Cloud Error', 'X');
+                }
+
+                sysNotify(`Uploaded ${classSubmissions.length} class result(s) to the cloud.`, 'Results Published', 'OK');
+            } finally {
+                cloudActionBusy = false;
+                renderAdminClassPage();
+            }
+        }
+
         function renderAdminClassPage() {
             if (!adminActiveClassView) return;
 
@@ -1203,6 +1289,11 @@
                 ? `${classBest.user.id} | ${formatSeconds(classBest.best.timeTakenSeconds)}`
                 : 'Waiting for results';
             document.getElementById('admin-class-assessments-count').innerText = classExams.length;
+            const publishBtn = document.getElementById('admin-class-publish-btn');
+            if (publishBtn) {
+                publishBtn.disabled = cloudActionBusy;
+                publishBtn.innerText = `Upload Class Results (${classSubmissions.length})`;
+            }
 
             const sortedClassExams = [...classExams].sort((a, b) => {
                 const titleA = (a.title || '').toLowerCase();
@@ -1295,7 +1386,6 @@
             const total = records.length;
             const avg = total ? Math.round(records.reduce((sum, r) => sum + r.percent, 0) / total) : 0;
             const best = records[0] || null;
-            const latest = total ? [...records].sort((a, b) => b.timestamp - a.timestamp)[0] : null;
 
             document.getElementById('admin-profile-pfp').src = student.pfp || `https://ui-avatars.com/api/?name=${encodeURIComponent(student.id)}`;
             document.getElementById('admin-profile-name').innerText = student.id;
@@ -1308,11 +1398,11 @@
             document.getElementById('admin-profile-best-time-meta').innerText = best ? `${best.examTitle} | best performance` : 'Score and time';
 
             document.getElementById('admin-profile-records').innerHTML = records.map((record, idx) => `
-                <div class="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm">
+                <div onclick="openReview(${record.originalIndex})" class="group cursor-pointer rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
                     <div class="flex items-start justify-between gap-4 mb-4">
                         <div>
                             <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400 font-black">Assessment ${idx + 1}</p>
-                            <h4 class="text-xl font-black text-slate-900 mt-1">${record.examTitle}</h4>
+                            <h4 class="text-xl font-black text-slate-900 mt-1">${escapeHtml(record.examTitle)}</h4>
                         </div>
                         <div class="flex flex-col items-end gap-2">
                             <span class="text-[11px] font-black px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">${getAssessmentKind(record.examTitle)}</span>
@@ -1332,10 +1422,22 @@
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Submitted</p>
                             <p class="text-sm font-bold text-slate-700 mt-1">${record.displayTime || 'N/A'}</p>
                         </div>
-                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 col-span-2">
-                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">How he did</p>
-                            <p class="text-sm font-bold text-slate-700 mt-1">${record.percent}% | ${record.correct} correct in ${formatSeconds(record.timeTakenSeconds)}</p>
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Wrong</p>
+                            <p class="text-lg font-black text-slate-900 mt-1">${record.wrongQuestions.length}</p>
                         </div>
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Answered</p>
+                            <p class="text-lg font-black text-slate-900 mt-1">${record.answeredCount}/${record.totalQuestions}</p>
+                        </div>
+                        <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 col-span-2">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Feedback</p>
+                            <p class="text-sm font-bold text-slate-700 mt-1">${record.adminNote ? escapeHtml(record.adminNote) : 'No feedback yet'}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Tap for full breakdown</span>
+                        <span class="text-indigo-600 text-sm font-bold group-hover:translate-x-0.5 transition-transform">Open Review -></span>
                     </div>
                 </div>
             `).join('') || `<div class="col-span-full rounded-[1.5rem] border border-slate-200 bg-slate-50 p-10 text-center text-slate-400 font-bold italic">No assessment records for this student yet.</div>`;
@@ -1467,37 +1569,164 @@
         }
 
         // --- PERFORMANCE ANALYTICS MODAL ---
+        async function saveSubmissionNote(subIdx) {
+            if (currentUser?.role !== 'admin') return;
+            if (cloudActionBusy) return;
+
+            const sub = db.submissions[subIdx];
+            if (!sub) return;
+
+            const input = document.getElementById('review-note-input');
+            const status = document.getElementById('review-note-status');
+            const saveBtn = document.getElementById('review-note-save-btn');
+            const note = (input?.value || '').trim();
+            const previousNote = sub.adminNote || '';
+
+            cloudActionBusy = true;
+            if (saveBtn) saveBtn.disabled = true;
+            if (status) status.innerText = 'Saving note...';
+
+            try {
+                sub.adminNote = note;
+                const saved = await saveState({
+                    showLoading: true,
+                    loadingTitle: 'Saving feedback',
+                    loadingMessage: 'Publishing your note to the cloud...',
+                    silentError: true
+                });
+
+                if (!saved) {
+                    sub.adminNote = previousNote;
+                    if (status) status.innerText = 'Note not saved';
+                    return sysNotify('Feedback could not be saved to the cloud.', 'Cloud Error', 'X');
+                }
+
+                if (status) status.innerText = 'Saved to cloud';
+                if (adminActiveStudentProfile) renderAdminStudentProfile();
+            } finally {
+                cloudActionBusy = false;
+                if (saveBtn) saveBtn.disabled = false;
+            }
+        }
+
         function openReview(subIdx) {
             const sub = db.submissions[subIdx];
-            const exam = db.exams.find(e => e.id === sub.examId);
-            if(!exam) return;
+            if (!sub) return;
 
-            document.getElementById('modal-student-name').innerText = `Student: ${sub.studentId}`;
-            document.getElementById('modal-exam-title').innerText = `Exam ID: ${exam.title}`;
+            const review = getSubmissionMetrics(sub, subIdx);
+            if (!review) return;
+            if (currentUser?.role === 'student' && review.studentId !== currentUser.id) {
+                return sysNotify("You can only view your own result.", "Access Denied", "🛡️");
+            }
 
-            const content = exam.questions.map((q, i) => {
-                const studentAns = sub.answers[i];
-                const isCorrect = studentAns === q.ans;
-                return `
-                    <div class="p-6 rounded-[2rem] border-2 ${isCorrect ? 'border-emerald-100 bg-emerald-50' : 'border-red-100 bg-red-50'}">
-                        <div class="flex justify-between items-start mb-4">
-                            <h4 class="font-extrabold text-slate-800 text-lg">${i+1}. ${q.q}</h4>
-                            <span class="${isCorrect ? 'text-emerald-600' : 'text-red-600'} font-black text-sm uppercase">
-                                ${isCorrect ? '✓ Correct' : '✕ Incorrect'}
-                            </span>
+            document.getElementById('modal-student-name').innerText = currentUser?.role === 'student'
+                ? 'My Result'
+                : `Student: ${review.studentId}`;
+            document.getElementById('modal-exam-title').innerText = `${review.examTitle} | ${review.percent}%`;
+
+            const wrongSummary = review.wrongQuestions.length
+                ? review.wrongQuestions.map(item => `
+                    <div class="rounded-2xl border border-red-200 bg-white p-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-red-500">Question ${item.index + 1}</p>
+                        <p class="text-sm font-bold text-slate-800 mt-2">${escapeHtml(item.question)}</p>
+                        <p class="text-xs text-slate-500 mt-3">Your answer: <span class="font-bold text-slate-700">${escapeHtml(item.studentAnswer || 'Not answered')}</span></p>
+                        <p class="text-xs text-slate-500 mt-1">Correct answer: <span class="font-bold text-emerald-600">${escapeHtml(item.correctAnswer || 'N/A')}</span></p>
+                    </div>
+                `).join('')
+                : `<div class="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-emerald-700 font-bold text-sm">No wrong answers. This was a perfect submission.</div>`;
+
+            const questionCards = review.reviewItems.map(item => `
+                <div class="p-6 rounded-[2rem] border-2 ${item.isCorrect ? 'border-emerald-100 bg-emerald-50' : 'border-red-100 bg-red-50'}">
+                    <div class="flex justify-between items-start mb-4 gap-4">
+                        <h4 class="font-extrabold text-slate-800 text-lg">${item.index + 1}. ${escapeHtml(item.question)}</h4>
+                        <span class="${item.isCorrect ? 'text-emerald-600' : 'text-red-600'} font-black text-sm uppercase whitespace-nowrap">
+                            ${item.isCorrect ? 'Correct' : 'Wrong'}
+                        </span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="rounded-2xl bg-white border border-slate-100 p-3">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Your Answer</p>
+                            <p class="text-sm font-bold text-slate-700 mt-1">${escapeHtml(item.studentAnswer || 'Not answered')}</p>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            ${q.options.map(opt => {
-                                let style = "bg-white border-slate-100 text-slate-500";
-                                if(opt === q.ans) style = "bg-emerald-500 border-emerald-500 text-white font-bold ring-4 ring-emerald-100";
-                                if(opt === studentAns && !isCorrect) style = "bg-red-500 border-red-500 text-white font-bold ring-4 ring-red-100";
-                                
-                                return `<div class="p-3 border-2 rounded-xl text-sm ${style}">${opt}</div>`;
-                            }).join('')}
+                        <div class="rounded-2xl bg-white border border-slate-100 p-3">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Correct Answer</p>
+                            <p class="text-sm font-bold text-emerald-600 mt-1">${escapeHtml(item.correctAnswer || 'N/A')}</p>
                         </div>
                     </div>
-                `;
-            }).join('');
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+                        ${item.options.map(opt => {
+                            let style = 'bg-white border-slate-100 text-slate-500';
+                            if (opt === item.correctAnswer) style = 'bg-emerald-500 border-emerald-500 text-white font-bold ring-4 ring-emerald-100';
+                            if (opt === item.studentAnswer && !item.isCorrect) style = 'bg-red-500 border-red-500 text-white font-bold ring-4 ring-red-100';
+                            return `<div class="p-3 border-2 rounded-xl text-sm ${style}">${escapeHtml(opt)}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            const noteBlock = currentUser?.role === 'admin'
+                ? `
+                    <div class="rounded-[2rem] border border-slate-200 bg-slate-50 p-5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Admin Note</p>
+                                <h4 class="text-lg font-black text-slate-900 mt-1">Write feedback for this student</h4>
+                            </div>
+                            <span id="review-note-status" class="text-xs font-black uppercase tracking-widest text-slate-400">${sub.adminNote ? 'Saved to cloud' : 'No note yet'}</span>
+                        </div>
+                        <textarea id="review-note-input" rows="4" class="w-full rounded-[1.5rem] border border-slate-200 bg-white p-4 text-sm font-medium outline-none focus:ring-2 ring-indigo-500" placeholder="Write what the student did well, what they missed, or how to improve.">${escapeHtml(sub.adminNote || '')}</textarea>
+                        <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <p class="text-xs text-slate-500 font-medium">This note is saved to the cloud and visible in the student results view.</p>
+                            <button onclick="saveSubmissionNote(${subIdx})" id="review-note-save-btn" class="px-5 py-3 rounded-2xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed">
+                                Save Note
+                            </button>
+                        </div>
+                    </div>
+                `
+                : (sub.adminNote
+                    ? `
+                        <div class="rounded-[2rem] border border-slate-200 bg-slate-50 p-5">
+                            <p class="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Feedback</p>
+                            <p class="text-sm font-medium text-slate-700 mt-2 leading-relaxed">${escapeHtml(sub.adminNote)}</p>
+                        </div>
+                    `
+                    : '');
+
+            const content = `
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Score</p>
+                        <p class="text-2xl font-black text-slate-900 mt-1">${review.correct}/${review.totalQuestions}</p>
+                    </div>
+                    <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Percent</p>
+                        <p class="text-2xl font-black text-slate-900 mt-1">${review.percent}%</p>
+                    </div>
+                    <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Wrong</p>
+                        <p class="text-2xl font-black text-slate-900 mt-1">${review.wrongQuestions.length}</p>
+                    </div>
+                    <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Time</p>
+                        <p class="text-2xl font-black text-slate-900 mt-1">${formatSeconds(review.timeTakenSeconds)}</p>
+                    </div>
+                </div>
+
+                <div class="rounded-[2rem] border border-slate-200 bg-white p-5 mb-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                        <div>
+                            <p class="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Wrong Questions</p>
+                            <h4 class="text-lg font-black text-slate-900 mt-1">${review.wrongQuestions.length ? `${review.wrongQuestions.length} item(s) need review` : 'No mistakes found'}</h4>
+                        </div>
+                        <span class="text-[11px] font-black px-3 py-1 rounded-full ${review.wrongQuestions.length ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-emerald-50 text-emerald-600 border border-emerald-100'}">${review.percent}%</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${wrongSummary}</div>
+                </div>
+
+                <div class="space-y-4 mb-6">${questionCards}</div>
+
+                ${noteBlock}
+            `;
 
             document.getElementById('modal-content').innerHTML = content;
             document.getElementById('modal-backdrop').classList.remove('hidden');
@@ -1673,6 +1902,8 @@
         }
 
         async function teacherSaveExam() {
+            if (cloudActionBusy) return;
+
             const title = document.getElementById('teacher-exam-title').value.trim();
             const dur = document.getElementById('teacher-exam-duration').value;
             const csv = document.getElementById('teacher-exam-csv').value.trim();
@@ -1685,19 +1916,51 @@
                 return { q: p[0], options: [p[1], p[2], p[3], p[4]], ans: p[5]?.trim() };
             });
 
-            if (editingExamId) {
-                const idx = db.exams.findIndex(e => e.id === editingExamId);
-                db.exams[idx] = { ...db.exams[idx], title, duration: dur, questions, class: examClass };
-            } else {
-                db.exams.push({ id: "EX"+Date.now(), title, duration: dur, questions, author: currentUser.id, class: examClass });
+            const isEditing = Boolean(editingExamId);
+            const examIndex = isEditing ? db.exams.findIndex(e => e.id === editingExamId) : -1;
+            if (isEditing && examIndex === -1) {
+                return sysNotify("Assessment not found.", "Error", "❌");
             }
 
-            await saveState();
-            sysNotify("Assessment successfully pushed to students.", "Cloud Synced", "✅", () => {
-                teacherRefreshStats();
-                renderTeacherExams();
-                teacherResetForm();
-            });
+            const submitBtn = document.getElementById('teacher-submit-btn');
+            const previousExam = isEditing ? JSON.parse(JSON.stringify(db.exams[examIndex])) : null;
+            const newExam = isEditing ? null : { id: "EX" + Date.now(), title, duration: dur, questions, author: currentUser.id, class: examClass };
+
+            cloudActionBusy = true;
+            if (submitBtn) submitBtn.disabled = true;
+
+            try {
+                if (isEditing) {
+                    db.exams[examIndex] = { ...db.exams[examIndex], title, duration: dur, questions, class: examClass };
+                } else {
+                    db.exams.push(newExam);
+                }
+
+                const saved = await saveState({
+                    showLoading: true,
+                    loadingTitle: isEditing ? "Updating assessment" : "Publishing assessment",
+                    loadingMessage: "Uploading the assessment to the cloud...",
+                    silentError: true
+                });
+
+                if (!saved) {
+                    if (isEditing) {
+                        db.exams[examIndex] = previousExam;
+                    } else {
+                        db.exams = db.exams.filter(ex => ex !== newExam);
+                    }
+                    return sysNotify("Assessment could not reach the cloud. Please try again.", "Cloud Error", "❌");
+                }
+
+                sysNotify("Assessment successfully pushed to students.", "Cloud Synced", "✅", () => {
+                    teacherRefreshStats();
+                    renderTeacherExams();
+                    teacherResetForm();
+                });
+            } finally {
+                cloudActionBusy = false;
+                if (submitBtn) submitBtn.disabled = false;
+            }
         }
 
         // --- STUDENT ENGINE ---
@@ -1724,9 +1987,96 @@
             }).join('') || `<div class="col-span-full py-20 text-center text-slate-400 font-bold">No active assessments available.</div>`;
         }
 
+        function renderStudentResults() {
+            const summary = document.getElementById('student-results-summary');
+            const list = document.getElementById('student-results-list');
+            if (!summary || !list || !currentUser || currentUser.role !== 'student') return;
+
+            const studentClass = (currentUser.class || '').trim();
+            const classExamIds = new Set(
+                db.exams
+                    .filter(ex => (ex.class || '').trim() === studentClass)
+                    .map(ex => ex.id)
+            );
+            const studentResults = db.submissions
+                .map(getSubmissionMetrics)
+                .filter(record => record && record.studentId === currentUser.id && classExamIds.has(record.examId))
+                .sort((a, b) => b.timestamp - a.timestamp);
+
+            const totalSubmissions = studentResults.length;
+            const totalCorrect = studentResults.reduce((sum, record) => sum + record.correct, 0);
+            const totalQuestions = studentResults.reduce((sum, record) => sum + record.totalQuestions, 0);
+            const overallScore = totalQuestions ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+            const best = [...studentResults].sort(comparePerformance)[0] || null;
+            const completedPercent = classExamIds.size ? Math.round((totalSubmissions / classExamIds.size) * 100) : 0;
+
+            summary.innerHTML = `
+                <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Class Assignments</p>
+                    <p class="text-2xl font-black text-slate-900 mt-1">${classExamIds.size}</p>
+                    <p class="text-xs text-slate-500 font-medium mt-1">Assessments assigned to your class</p>
+                </div>
+                <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Completed</p>
+                    <p class="text-2xl font-black text-slate-900 mt-1">${totalSubmissions}</p>
+                    <p class="text-xs text-slate-500 font-medium mt-1">${completedPercent}% of class assignments submitted</p>
+                </div>
+                <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Overall Score</p>
+                    <p class="text-2xl font-black text-slate-900 mt-1">${overallScore}%</p>
+                    <p class="text-xs text-slate-500 font-medium mt-1">${totalQuestions ? `${totalCorrect}/${totalQuestions} correct answers` : 'No graded answers yet'}</p>
+                </div>
+                <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Best Result</p>
+                    <p class="text-2xl font-black text-slate-900 mt-1">${best ? `${best.percent}%` : '-'}</p>
+                    <p class="text-xs text-slate-500 font-medium mt-1">${best ? `${best.examTitle} | ${formatSeconds(best.timeTakenSeconds)}` : 'No submissions yet'}</p>
+                </div>
+            `;
+
+            list.innerHTML = studentResults.length ? studentResults.map(record => {
+                const wrongNumbers = record.wrongQuestions.map(item => item.index + 1);
+                const wrongPreview = wrongNumbers.length ? `Wrong Qs: ${wrongNumbers.slice(0, 4).join(', ')}${wrongNumbers.length > 4 ? '...' : ''}` : 'Perfect score';
+                return `
+                    <div onclick="openReview(${record.originalIndex})" class="group cursor-pointer rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                        <div class="flex items-start justify-between gap-4">
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Assessment</p>
+                                <h4 class="text-xl font-black text-slate-900 mt-1 truncate">${escapeHtml(record.examTitle)}</h4>
+                                <p class="text-sm text-slate-500 font-medium mt-2">${record.correct}/${record.totalQuestions} correct | ${formatSeconds(record.timeTakenSeconds)}</p>
+                            </div>
+                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">${record.percent}%</span>
+                        </div>
+                        <div class="mt-4 grid grid-cols-2 gap-3">
+                            <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Missed</p>
+                                <p class="text-sm font-bold text-slate-700 mt-1">${wrongNumbers.length}</p>
+                            </div>
+                            <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Submitted</p>
+                                <p class="text-sm font-bold text-slate-700 mt-1">${record.displayTime || 'N/A'}</p>
+                            </div>
+                            <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 col-span-2">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Mistake Check</p>
+                                <p class="text-sm font-bold text-slate-700 mt-1">${escapeHtml(wrongPreview)}</p>
+                            </div>
+                            <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3 col-span-2">
+                                <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Feedback</p>
+                                <p class="text-sm font-bold text-slate-700 mt-1">${record.adminNote ? escapeHtml(record.adminNote) : 'No feedback yet'}</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Tap for full breakdown</span>
+                            <span class="text-indigo-600 text-sm font-bold group-hover:translate-x-0.5 transition-transform">View Review -></span>
+                        </div>
+                    </div>
+                `;
+            }).join('') : `<div class="col-span-full rounded-[1.5rem] border border-slate-200 bg-slate-50 p-10 text-center text-slate-400 font-bold italic">No results yet. Your class assignment scores will appear here after you submit assessments.</div>`;
+        }
+
         function studentStartExam(id) {
             activeExam = db.exams.find(e => e.id === id);
             activeExamStartedAt = Date.now();
+            document.getElementById('student-results-panel')?.classList.add('hidden');
             document.getElementById('student-exam-list').classList.add('hidden');
             document.getElementById('student-exam-interface').classList.remove('hidden');
 
@@ -1761,12 +2111,15 @@
         }
 
         async function studentSubmitExam() {
+            if (cloudActionBusy || !activeExam) return;
+
             clearInterval(timerInterval);
             const startedAt = activeExamStartedAt || Date.now();
             const submittedAt = Date.now();
             const timeTakenSeconds = Math.max(1, Math.round((submittedAt - startedAt) / 1000));
             const ans = activeExam.questions.map((_, i) => document.querySelector(`input[name="q${i}"]:checked`)?.value || null);
-            db.submissions.push({
+            const submitBtn = document.getElementById('student-submit-btn');
+            const submission = {
                 studentId: currentUser.id,
                 examId: activeExam.id,
                 answers: ans,
@@ -1774,14 +2127,37 @@
                 submittedAt: submittedAt,
                 timeTakenSeconds: timeTakenSeconds,
                 time: new Date(submittedAt).toLocaleString()
-            });
-            await saveState();
-            sysNotify("Submission complete. You can now view your results with your teacher.", "Assessment Finished", "🎓", () => {
-                document.getElementById('student-exam-interface').classList.add('hidden');
-                document.getElementById('student-exam-list').classList.remove('hidden');
-                studentListExams();
-                activeExamStartedAt = null;
-            });
+            };
+
+            cloudActionBusy = true;
+            if (submitBtn) submitBtn.disabled = true;
+            db.submissions.push(submission);
+
+            try {
+                const saved = await saveState({
+                    showLoading: true,
+                    loadingTitle: "Submitting assessment",
+                    loadingMessage: "Uploading your answers to the cloud...",
+                    silentError: true
+                });
+
+                if (!saved) {
+                    db.submissions = db.submissions.filter(s => s !== submission);
+                    return sysNotify("Your submission could not reach the cloud. Please try again.", "Cloud Error", "❌");
+                }
+
+                sysNotify("Submission complete. You can now view your results with your teacher.", "Assessment Finished", "🎓", () => {
+                    document.getElementById('student-exam-interface').classList.add('hidden');
+                    document.getElementById('student-exam-list').classList.remove('hidden');
+                    document.getElementById('student-results-panel')?.classList.remove('hidden');
+                    renderStudentResults();
+                    studentListExams();
+                    activeExamStartedAt = null;
+                });
+            } finally {
+                cloudActionBusy = false;
+                if (submitBtn) submitBtn.disabled = false;
+            }
         }
 
         window.onload = bootstrap;
