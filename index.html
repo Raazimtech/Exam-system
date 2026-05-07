@@ -44,36 +44,19 @@
         #install-screen {
             position: fixed;
             overflow: hidden;
-            background: radial-gradient(1200px 900px at 20% 15%, rgba(34, 197, 94, 0.16), transparent 55%),
-                        radial-gradient(900px 700px at 80% 30%, rgba(22, 163, 74, 0.12), transparent 55%),
-                        linear-gradient(180deg, #f0fdf4 0%, #ffffff 60%);
-        }
-
-        #install-screen::before,
-        #install-screen::after {
-            content: "";
-            position: absolute;
-            border-radius: 9999px;
-            filter: blur(22px);
-            opacity: 0.85;
-            pointer-events: none;
+            background: url('v.webp') center/cover no-repeat;
         }
 
         #install-screen::before {
-            width: min(52vw, 520px);
-            height: min(52vw, 520px);
-            left: -10%;
-            top: -12%;
-            background: radial-gradient(circle at 30% 30%, rgba(34, 197, 94, 0.35), rgba(34, 197, 94, 0) 70%);
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(22, 101, 52, 0.55));
+            backdrop-filter: blur(2.5px);
+            z-index: 1;
         }
 
-        #install-screen::after {
-            width: min(46vw, 460px);
-            height: min(46vw, 460px);
-            right: -12%;
-            bottom: -16%;
-            background: radial-gradient(circle at 40% 40%, rgba(22, 163, 74, 0.30), rgba(22, 163, 74, 0) 70%);
-        }
+        #install-screen .clay-card { position: relative; z-index: 10; }
 
         .clay-card {
             position: relative;
@@ -297,7 +280,7 @@
             </button>
         </div>
         <!-- "Made by Raazim Tech" section for install screen -->
-        <div class="absolute bottom-10 flex flex-col items-center gap-2 opacity-60">
+        <div class="absolute bottom-10 flex flex-col items-center gap-2 opacity-80 z-10">
             <img src="raazim logo.png" alt="Raazim Tech" class="h-6">
             <p class="text-[10px] font-black tracking-widest text-green-300 uppercase">Made by Raazim Tech</p>
         </div>
