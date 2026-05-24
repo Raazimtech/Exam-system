@@ -332,7 +332,7 @@
                     <span id="install-percent" class="hidden">0%</span>
                 </div>
                 <div id="install-progress-track" class="h-3 rounded-full bg-slate-200/70 overflow-hidden border border-white/70">
-                    <div id="install-bar" class="h-full rounded-full bg-gradient-to-r from-blue-700 via-blue-500 to-lime-400"></div>
+                    <div id="install-bar" class="h-full rounded-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-300"></div>
                 </div>
                 <p class="mt-3 text-xs font-semibold text-slate-500 text-center">Keep this tab open while we install.</p>
             </div>
@@ -1044,6 +1044,10 @@
             const id = document.getElementById('login-id').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             if(!id || !pass) return;
+            if (!isSafeUserId(id)) {
+                sysNotify('User ID can only use letters, numbers, dot, underscore, or dash.', 'Invalid User ID', '❌');
+                return;
+            }
 
             showTransitionOverlay('Signing in', 'Loading your dashboard');
             await fetchState();
@@ -1095,6 +1099,20 @@
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
+        }
+
+        function isSafeText(value, { maxLen = 80 } = {}) {
+            const text = String(value ?? '').trim();
+            if (!text) return false;
+            if (text.length > maxLen) return false;
+            return !/[<>"'`]/.test(text);
+        }
+
+        function isSafeUserId(value) {
+            const text = String(value ?? '').trim();
+            if (!text) return false;
+            if (text.length < 2 || text.length > 32) return false;
+            return /^[A-Za-z0-9][A-Za-z0-9_.-]*$/.test(text);
         }
 
         function formatSeconds(seconds) {
@@ -1199,6 +1217,8 @@
             const userClass = document.getElementById('admin-new-class').value.trim();
 
             if(!id || !pass) return sysNotify("All fields required.", "Form Error", "❌");
+            if (!isSafeUserId(id)) return sysNotify("User ID can only use letters, numbers, dot, underscore, or dash.", "Invalid User ID", "❌");
+            if (role === 'student' && userClass && !isSafeText(userClass, { maxLen: 40 })) return sysNotify("Class name contains invalid characters.", "Invalid Class", "❌");
 
             if (editingUserId) {
                 // Update existing user
@@ -1365,12 +1385,12 @@
                     <td class="p-4 font-bold text-slate-700 flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <img src="${u.pfp || 'https://ui-avatars.com/api/?name='+encodeURIComponent(u.id)}" class="w-8 h-8 rounded-full border border-slate-200 object-cover">
-                            ${u.id} ${u.class ? `<span class="text-xs font-medium text-slate-500 ml-2">(${u.class})</span>` : ''}
+                            ${escapeHtml(u.id)} ${u.class ? `<span class="text-xs font-medium text-slate-500 ml-2">(${escapeHtml(u.class)})</span>` : ''}
                         </div>
                         <div class="flex items-center gap-1">
-                            <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
+                            <button onclick="adminEditUser(${JSON.stringify(u.id)})" class="text-slate-300 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
                         </div>
-                        <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
+                        <button onclick="adminDeleteUser(${JSON.stringify(u.id)})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </td>
@@ -1378,8 +1398,8 @@
             document.getElementById('table-exams').innerHTML = filteredExams.map(ex => `
                 <tr class="hover:bg-slate-50 group">
                     <td class="p-4 font-bold text-slate-700 flex justify-between items-center">
-                        <span class="truncate mr-2">${ex.title}</span>
-                        <button onclick="adminDeleteExam('${ex.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete Exam">
+                        <span class="truncate mr-2">${escapeHtml(ex.title)}</span>
+                        <button onclick="adminDeleteExam(${JSON.stringify(ex.id)})" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete Exam">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </td>
@@ -1993,11 +2013,11 @@
 
             table.innerHTML = filteredSubmissions.map(data => `
                 <tr class="hover:bg-blue-50 cursor-pointer group transition" onclick="openReview(${data.originalIndex})">
-                    <td class="p-5 font-black text-blue-600 underline-offset-4 group-hover:underline">${data.studentId}</td>
-                    <td class="p-5 font-bold text-slate-600">${data.examTitle}</td>
-                    <td class="p-5 text-slate-500">${data.studentClass}</td>
+                    <td class="p-5 font-black text-blue-600 underline-offset-4 group-hover:underline">${escapeHtml(data.studentId)}</td>
+                    <td class="p-5 font-bold text-slate-600">${escapeHtml(data.examTitle)}</td>
+                    <td class="p-5 text-slate-500">${escapeHtml(data.studentClass)}</td>
                     <td class="p-5 font-black text-slate-900">${data.score}/${data.totalQuestions} <span class="text-[10px] text-slate-400 font-medium ml-1">(${data.percent}%)</span></td>
-                    <td class="p-5 text-xs text-slate-400 font-medium">${data.displayTime}</td>
+                    <td class="p-5 text-xs text-slate-400 font-medium">${escapeHtml(data.displayTime)}</td>
                 </tr>
             `).join('') || `<tr><td colspan="5" class="p-10 text-center text-slate-400 font-bold italic">No data synced yet.</td></tr>`;
         }
@@ -2048,16 +2068,16 @@
 
             table.innerHTML = myExams.map(ex => `
                 <tr class="hover:bg-slate-50 group">
-                    <td class="p-5 font-bold text-slate-700">${ex.title}</td>
-                    <td class="p-5 text-slate-500">${ex.class || 'N/A'}</td>
+                    <td class="p-5 font-bold text-slate-700">${escapeHtml(ex.title)}</td>
+                    <td class="p-5 text-slate-500">${escapeHtml(ex.class || 'N/A')}</td>
                     <td class="p-5 text-slate-500">${ex.questions.length} Items</td>
                     <td class="p-5 text-slate-500">${ex.duration}m</td>
                     <td class="p-5 text-right">
                         <div class="flex items-center justify-end gap-2">
-                            <button onclick="teacherEditExam('${ex.id}')" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 transition">
+                            <button onclick="teacherEditExam(${JSON.stringify(ex.id)})" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 transition">
                                 Edit
                             </button>
-                            <button onclick="teacherDeleteExam('${ex.id}')" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition" title="Delete ${getAssessmentKind(ex.title)}">
+                            <button onclick="teacherDeleteExam(${JSON.stringify(ex.id)})" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition" title="Delete ${escapeHtml(getAssessmentKind(ex.title))}">
                                 ${getAssessmentKind(ex.title) === 'Quiz' ? 'Delete Quiz' : 'Delete Assessment'}
                             </button>
                         </div>
@@ -2113,6 +2133,8 @@
             const examClass = document.getElementById('teacher-exam-class').value.trim();
 
             if(!title || !csv || !examClass) return sysNotify("All fields required.", "Form Error", "❌");
+            if (!isSafeText(title, { maxLen: 80 })) return sysNotify("Assessment title contains invalid characters.", "Invalid Title", "❌");
+            if (!isSafeText(examClass, { maxLen: 40 })) return sysNotify("Class name contains invalid characters.", "Invalid Class", "❌");
 
             const questions = csv.split('\n').map(line => {
                 const p = line.split(',');
@@ -2177,11 +2199,11 @@
                 return `
                     <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-transparent hover:border-blue-500 transition-all group">
                         <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-2xl font-black text-slate-800">${ex.title}</h3>
+                            <h3 class="text-2xl font-black text-slate-800">${escapeHtml(ex.title)}</h3>
                             <span class="bg-slate-100 text-slate-400 p-2 rounded-xl">📝</span>
                         </div>
-                        <p class="text-slate-500 font-medium mb-8">${ex.questions.length} Problems • ${ex.duration} Minutes • Class: ${ex.class}</p>
-                        <button onclick="studentStartExam('${ex.id}')" ${done ? 'disabled' : ''} 
+                        <p class="text-slate-500 font-medium mb-8">${ex.questions.length} Problems • ${escapeHtml(ex.duration)} Minutes • Class: ${escapeHtml(ex.class)}</p>
+                        <button onclick="studentStartExam(${JSON.stringify(ex.id)})" ${done ? 'disabled' : ''} 
                             class="w-full py-4 rounded-2xl font-bold transition-all ${done ? 'bg-slate-50 text-slate-300' : 'bg-blue-600 text-white shadow-lg group-hover:scale-[1.02]'}">
                             ${done ? 'Completed' : 'Begin Assessment'}
                         </button>
@@ -2478,6 +2500,11 @@
                         doneWrap?.classList.add('hidden');
                         setBtnBusy(false);
                         installBtn.textContent = originalBtnText;
+                        sysNotify(
+                            'Install was canceled. If your browser shows a security warning, install only from a trusted URL (HTTPS or localhost). You can also use the browser menu → “Install app” / “Add to Home Screen”.',
+                            'Install Help',
+                            '🛡️'
+                        );
                     }
                 } catch (_) {
                     // ignore
