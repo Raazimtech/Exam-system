@@ -2,7 +2,7 @@
   "name": "EduX",
   "short_name": "EduX",
   "description": "EduX Assessment System",
-  "start_url": "./system41.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
