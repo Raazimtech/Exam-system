@@ -2390,8 +2390,51 @@
 
     <script>
         (() => {
+            const createDeferred = () => {
+                let resolve;
+                const promise = new Promise((r) => (resolve = r));
+                return { promise, resolve };
+            };
+
             if ('serviceWorker' in navigator) {
+                const coreCached = createDeferred();
+                let coreCachedDone = false;
+
+                const handleSwMessage = (event) => {
+                    const data = event?.data || {};
+                    if (data.type === 'EDUX_CORE_CACHED') {
+                        coreCachedDone = true;
+                        coreCached.resolve(true);
+                    }
+                    if (data.type === 'EDUX_CORE_STATUS' && data.cached === true) {
+                        coreCachedDone = true;
+                        coreCached.resolve(true);
+                    }
+                };
+
+                navigator.serviceWorker.addEventListener('message', handleSwMessage);
+
                 navigator.serviceWorker.register('./sw.js').catch(() => {});
+
+                const requestCoreStatus = async () => {
+                    try {
+                        const reg = await navigator.serviceWorker.ready;
+                        const sw = navigator.serviceWorker.controller || reg.active || reg.waiting || reg.installing;
+                        if (sw) sw.postMessage({ type: 'EDUX_CORE_STATUS' });
+                    } catch (_) {
+                        // ignore
+                    }
+                };
+
+                // Poll until the core cache is ready; this is used to gate the DONE UI.
+                (async () => {
+                    for (let i = 0; i < 30 && !coreCachedDone; i += 1) {
+                        await requestCoreStatus();
+                        await new Promise((r) => setTimeout(r, 500));
+                    }
+                })();
+
+                window.__eduxCoreCachedPromise = coreCached.promise;
             }
 
             const installBtn = document.getElementById('install-app-btn');
@@ -2409,6 +2452,11 @@
             if (isStandalone) return;
 
             let deferredPrompt = null;
+            const appInstalled = createDeferred();
+            const getCoreCachedPromise = () => {
+                if (!('serviceWorker' in navigator)) return Promise.resolve(true);
+                return window.__eduxCoreCachedPromise || Promise.resolve(false);
+            };
 
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
@@ -2417,6 +2465,7 @@
 
             window.addEventListener('appinstalled', () => {
                 deferredPrompt = null;
+                appInstalled.resolve(true);
                 try {
                     window.__eduexamInstallDone?.();
                 } catch (_) {
@@ -2462,9 +2511,16 @@
                 };
 
                 window.__eduexamInstallDone = () => {
-                    showDoneUI();
-                    setBtnBusy(false);
-                    installBtn.textContent = originalBtnText;
+                    // Only show DONE once the browser finished installing AND core assets are cached.
+                    Promise.all([appInstalled.promise, getCoreCachedPromise()])
+                        .then(() => {
+                            showDoneUI();
+                            setBtnBusy(false);
+                            installBtn.textContent = originalBtnText;
+                        })
+                        .catch(() => {
+                            // ignore
+                        });
                 };
 
                 if (!deferredPrompt) {
@@ -2487,11 +2543,15 @@
                     if (choice?.outcome === 'accepted') {
                         if (statusText) statusText.textContent = 'Installing…';
                         installBtn.textContent = 'installing…';
+                        // Keep the progress UI until we have both: appinstalled + core cached.
+                        Promise.all([appInstalled.promise, getCoreCachedPromise()])
+                            .then(() => window.__eduexamInstallDone?.())
+                            .catch(() => {});
                         // Accurate completion: wait for the real `appinstalled` event to show DONE.
                         // If the event doesn't fire (browser quirk), keep the indeterminate state.
                         setTimeout(() => {
                             if (document.getElementById('install-done')?.classList.contains('hidden')) {
-                                if (statusText) statusText.textContent = 'Finalizing… (keep this tab open)';
+                                if (statusText) statusText.textContent = 'Downloading app… (keep this tab open)';
                             }
                         }, 3000);
                     } else {
