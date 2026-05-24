@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduExam Pro | Ultimate Assessment Cloud</title>
-    <link rel="icon" type="image/png" href="logo1.png">
+    <title>EduX | Ultimate Assessment Cloud</title>
+    <link rel="icon" type="image/png" href="favicon-32.png">
     <link rel="apple-touch-icon" href="icon-192.png">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#16a34a">
+    <meta name="theme-color" content="#2563eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="EduExam Pro">
+    <meta name="apple-mobile-web-app-title" content="EduX">
     <meta name="mobile-web-app-capable" content="yes">
     <script>
         (() => {
@@ -51,7 +51,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(22, 101, 52, 0.55));
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65), rgba(30, 64, 175, 0.55));
             backdrop-filter: blur(2.5px);
             z-index: 1;
         }
@@ -86,13 +86,13 @@
             width: 100%;
             padding: 2.5rem 1.25rem;
             border-radius: 2.25rem;
-            background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+            background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
             color: #ffffff;
             font-weight: 900;
             letter-spacing: -0.02em;
             box-shadow:
-                0 18px 40px rgba(22, 163, 74, 0.35),
-                0 8px 18px rgba(22, 163, 74, 0.22),
+                0 18px 40px rgba(37, 99, 235, 0.35),
+                0 8px 18px rgba(37, 99, 235, 0.22),
                 inset 0 1px 0 rgba(255, 255, 255, 0.45),
                 inset 0 -10px 18px rgba(3, 7, 18, 0.22);
             transition: transform 120ms ease, box-shadow 120ms ease, filter 120ms ease;
@@ -108,8 +108,8 @@
         #install-app-btn.clay-btn:active {
             transform: translateY(1px) scale(0.99);
             box-shadow:
-                0 12px 28px rgba(22, 163, 74, 0.30),
-                0 6px 14px rgba(22, 163, 74, 0.18),
+                0 12px 28px rgba(37, 99, 235, 0.30),
+                0 6px 14px rgba(37, 99, 235, 0.18),
                 inset 0 2px 0 rgba(255, 255, 255, 0.30),
                 inset 0 -8px 14px rgba(3, 7, 18, 0.22);
         }
@@ -117,9 +117,9 @@
         #install-app-btn.clay-btn:focus-visible {
             outline: none;
             box-shadow:
-                0 18px 40px rgba(22, 163, 74, 0.35),
-                0 8px 18px rgba(22, 163, 74, 0.22),
-                0 0 0 6px rgba(34, 197, 94, 0.25),
+                0 18px 40px rgba(37, 99, 235, 0.35),
+                0 8px 18px rgba(37, 99, 235, 0.22),
+                0 0 0 6px rgba(59, 130, 246, 0.25),
                 inset 0 1px 0 rgba(255, 255, 255, 0.45),
                 inset 0 -10px 18px rgba(3, 7, 18, 0.22);
         }
@@ -138,11 +138,11 @@
             width: 78px;
             height: 78px;
             border-radius: 9999px;
-            background: rgba(22, 163, 74, 0.10);
-            border: 2px solid rgba(22, 163, 74, 0.25);
+            background: rgba(37, 99, 235, 0.10);
+            border: 2px solid rgba(37, 99, 235, 0.25);
             display: grid;
             place-items: center;
-            box-shadow: 0 18px 40px rgba(22, 163, 74, 0.18);
+            box-shadow: 0 18px 40px rgba(37, 99, 235, 0.18);
             transform: scale(0.85);
             opacity: 0;
             animation: done-pop 520ms cubic-bezier(.2, .9, .2, 1) forwards;
@@ -151,7 +151,7 @@
         .done-check {
             width: 42px;
             height: 42px;
-            stroke: #16a34a;
+            stroke: #2563eb;
             stroke-width: 6;
             fill: none;
             stroke-linecap: round;
@@ -321,7 +321,7 @@
 
     <div id="install-screen" class="fixed inset-0 z-[140] flex items-center justify-center p-6">
         <div class="clay-card">
-            <img src="logo1.png" alt="EduExam Pro Logo" class="h-20 mx-auto mb-8 object-contain">
+            <img src="logo official.png" alt="EduX Logo" class="h-20 mx-auto mb-8 object-contain">
             <button id="install-app-btn" type="button" class="clay-btn text-3xl sm:text-4xl">
                 download app
             </button>
@@ -332,7 +332,7 @@
                     <span id="install-percent" class="hidden">0%</span>
                 </div>
                 <div id="install-progress-track" class="h-3 rounded-full bg-slate-200/70 overflow-hidden border border-white/70">
-                    <div id="install-bar" class="h-full rounded-full bg-gradient-to-r from-green-700 via-green-500 to-lime-400"></div>
+                    <div id="install-bar" class="h-full rounded-full bg-gradient-to-r from-blue-700 via-blue-500 to-lime-400"></div>
                 </div>
                 <p class="mt-3 text-xs font-semibold text-slate-500 text-center">Keep this tab open while we install.</p>
             </div>
@@ -343,35 +343,35 @@
                         <path class="done-check" d="M14 27.5l8 8L38 18"></path>
                     </svg>
                 </div>
-                <div class="done-text mt-3 text-2xl font-black tracking-[0.35em] text-green-700">DONE</div>
+                <div class="done-text mt-3 text-2xl font-black tracking-[0.35em] text-blue-700">DONE</div>
                 <p class="mt-2 text-xs font-semibold text-slate-500 text-center">Open the app from your home screen / desktop icon.</p>
             </div>
         </div>
         <!-- "Made by Raazim Tech" section for install screen -->
         <div class="absolute bottom-10 flex flex-col items-center gap-2 opacity-80 z-10">
             <img src="raazim logo.png" alt="Raazim Tech" class="h-6">
-            <p class="text-[10px] font-black tracking-widest text-green-300 uppercase">Made by Raazim Tech</p>
+            <p class="text-[10px] font-black tracking-widest text-blue-300 uppercase">Made by Raazim Tech</p>
         </div>
         <!-- End "Made by Raazim Tech" section -->
 
     </div>
 
-    <div id="login-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-green-950 p-6">
+    <div id="login-screen" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-blue-950 p-6">
         <div class="bg-white p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl w-full max-w-md mx-4 text-center">
-            <img src="logo1.png" alt="EduExam" class="h-20 mx-auto mb-6 object-contain">
+            <img src="logo official.png" alt="EduX" class="h-20 mx-auto mb-6 object-contain">
             <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Welcome Back</h1>
             <p class="text-slate-500 mb-8 font-medium">Log in to your portal</p>
             
             <div class="space-y-5 text-left">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-1">User ID</label>
-                    <input type="text" id="login-id" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-green-500 focus:ring-0 outline-none transition" placeholder="User ID">
+                    <input type="text" id="login-id" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:ring-0 outline-none transition" placeholder="User ID">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2 ml-1">Password</label>
-                    <input type="password" id="login-pass" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-green-500 focus:ring-0 outline-none transition" placeholder="••••••••">
+                    <input type="password" id="login-pass" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-blue-500 focus:ring-0 outline-none transition" placeholder="••••••••">
                 </div>
-                <button onclick="login()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-green-200 transition-all active:scale-[0.98]">
+                <button onclick="login()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl shadow-xl shadow-blue-200 transition-all active:scale-[0.98]">
                     Sign In
                 </button>
             </div>
@@ -379,7 +379,7 @@
         </div>
         <div class="absolute bottom-10 flex flex-col items-center gap-2 opacity-60">
             <img src="raazim logo.png" alt="Raazim Tech" class="h-6">
-            <p class="text-[10px] font-black tracking-widest text-green-300 uppercase">Made by Raazim Tech</p>
+            <p class="text-[10px] font-black tracking-widest text-blue-300 uppercase">Made by Raazim Tech</p>
         </div>
     </div>
 
@@ -387,9 +387,9 @@
         <div class="bg-white w-full max-w-5xl max-h-[calc(100svh-1rem)] sm:max-h-[90vh] rounded-[2rem] sm:rounded-[3rem] shadow-2xl overflow-hidden flex flex-col fade-in">
             <div class="p-8 border-b flex justify-between items-center bg-slate-50">
                 <div>
-                    <img src="logo1.png" alt="Logo" class="h-8 mb-3 object-contain">
+                    <img src="logo official.png" alt="Logo" class="h-8 mb-3 object-contain">
                     <h2 id="modal-student-name" class="text-3xl font-extrabold text-slate-800">Student Name</h2>
-                    <p id="modal-exam-title" class="text-green-600 font-bold uppercase tracking-tighter"></p>
+                    <p id="modal-exam-title" class="text-blue-600 font-bold uppercase tracking-tighter"></p>
                 </div>
                 <button onclick="closeModal()" class="bg-white hover:bg-slate-100 text-slate-400 p-3 rounded-2xl shadow-sm border border-slate-200 transition">✕ Close</button>
             </div>
@@ -409,7 +409,7 @@
             <h3 id="sys-modal-title" class="text-2xl font-black text-slate-900 mb-2">Notice</h3>
             <p id="sys-modal-msg" class="text-slate-500 mb-8 font-medium leading-relaxed"></p>
             <div id="sys-modal-actions" class="flex gap-4">
-                <button id="sys-modal-btn-primary" class="flex-1 bg-green-600 text-white py-4 rounded-2xl font-bold hover:bg-green-700 transition shadow-lg shadow-green-100">Okay</button>
+                <button id="sys-modal-btn-primary" class="flex-1 bg-blue-600 text-white py-4 rounded-2xl font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-100">Okay</button>
                 <button id="sys-modal-btn-secondary" class="flex-1 bg-slate-100 text-slate-600 py-4 rounded-2xl font-bold hover:bg-slate-200 transition hidden">Cancel</button>
             </div>
             <div class="mt-8 pt-6 border-t flex flex-col items-center gap-2 opacity-30 grayscale">
@@ -421,13 +421,13 @@
 
     <div id="transition-overlay" class="fixed inset-0 z-[130] hidden items-center justify-center bg-slate-950/60 backdrop-blur-md px-4">
         <div class="relative w-full max-w-md">
-            <div class="absolute -inset-10 rounded-full bg-green-500/20 blur-3xl"></div>
+            <div class="absolute -inset-10 rounded-full bg-blue-500/20 blur-3xl"></div>
             <div class="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border border-white/60 bg-white/95 p-6 sm:p-8 text-center shadow-2xl">
-                <div class="mx-auto mb-6 h-16 w-16 rounded-full border-[5px] border-green-100 border-t-green-600 animate-spin-custom"></div>
+                <div class="mx-auto mb-6 h-16 w-16 rounded-full border-[5px] border-blue-100 border-t-blue-600 animate-spin-custom"></div>
                 <h3 id="transition-title" class="text-2xl font-black text-slate-900">Loading</h3>
                 <p id="transition-message" class="mt-2 text-sm font-medium text-slate-500">Please wait...</p>
                 <div class="mt-6 h-2 overflow-hidden rounded-full bg-slate-100">
-                    <div class="h-full w-1/2 rounded-full bg-gradient-to-r from-green-600 via-slate-900 to-green-500 animate-pulse"></div>
+                    <div class="h-full w-1/2 rounded-full bg-gradient-to-r from-blue-600 via-slate-900 to-blue-500 animate-pulse"></div>
                 </div>
             </div>
         </div>
@@ -437,12 +437,12 @@
         <nav class="glass-nav px-4 py-3 sm:px-8 sm:py-4 sticky top-0 z-50">
             <div class="max-w-7xl mx-auto flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <img src="logo1.png" alt="Logo" class="h-10 object-contain">
+                    <img src="logo official.png" alt="Logo" class="h-10 object-contain">
                     <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
-                    <span class="font-extrabold text-xl tracking-tighter hidden sm:block italic">EduExam <span class="text-green-600">PRO</span></span>
+                    <span class="font-extrabold text-xl tracking-tighter hidden sm:block italic">EduX <span class="text-blue-600">PRO</span></span>
                 </div>
                 <div class="hidden md:flex items-center gap-3 lg:gap-5 flex-wrap justify-end max-w-full">
-                    <button onclick="syncDatabase()" id="sync-btn" class="flex items-center gap-2 bg-green-50 text-green-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-green-100 transition mr-2 shrink-0">
+                    <button onclick="syncDatabase()" id="sync-btn" class="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-blue-100 transition mr-2 shrink-0">
                         <svg class="sync-icon w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         <span id="sync-text" class="hidden lg:inline">Sync Cloud</span>
                     </button>
@@ -450,7 +450,7 @@
                     <img id="nav-user-pfp" src="" class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover hidden shrink-0">
                     <div class="text-right hidden lg:block">
                         <p id="nav-user-id" class="text-sm font-black text-slate-800 leading-none"></p>
-                        <span id="nav-user-role" class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
+                        <span id="nav-user-role" class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
                     </div>
                     <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2 rounded-xl text-sm font-bold transition shrink-0">Logout</button>
                 </div>
@@ -464,10 +464,10 @@
                     <img id="nav-user-pfp-mobile" src="" class="w-12 h-12 rounded-full border object-cover hidden">
                     <div class="flex-1">
                         <p id="nav-user-id-mobile" class="text-sm font-black text-slate-800 leading-none"></p>
-                        <span id="nav-user-role-mobile" class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
+                        <span id="nav-user-role-mobile" class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-md font-bold uppercase mt-1 inline-block"></span>
                     </div>
                 </div>
-                <button onclick="syncDatabase()" class="w-full bg-green-50 hover:bg-green-100 text-green-600 px-5 py-3 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+                <button onclick="syncDatabase()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-600 px-5 py-3 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
                      <svg class="sync-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                     Sync Database
                 </button>
@@ -486,7 +486,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div id="admin-management-card" class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-200 h-fit">
                         <h2 class="text-xl font-extrabold mb-6 flex items-center gap-2">
-                            <span class="bg-green-100 text-green-600 p-2 rounded-lg text-sm">👤</span>
+                            <span class="bg-blue-100 text-blue-600 p-2 rounded-lg text-sm">👤</span>
                             Manage Identities
                         </h2>
                         <div class="space-y-4">
@@ -496,17 +496,17 @@
                                 </div>
                                 <div class="flex-1">
                                     <label class="block text-[10px] font-black uppercase text-slate-400 mb-1">Profile Photo</label>
-                                    <input type="file" id="admin-new-pfp" accept="image/*" onchange="handlePfpSelection(this)" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-green-50 file:text-green-600 cursor-pointer w-full">
+                                    <input type="file" id="admin-new-pfp" accept="image/*" onchange="handlePfpSelection(this)" class="text-[10px] text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded-full file:border-0 file:bg-blue-50 file:text-blue-600 cursor-pointer w-full">
                                 </div>
                             </div>
-                            <input type="text" id="admin-new-id" placeholder="User ID" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-green-500">
-                            <input type="password" id="admin-new-pass" placeholder="Set Password" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-green-500">
+                            <input type="text" id="admin-new-id" placeholder="User ID" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-blue-500">
+                            <input type="password" id="admin-new-pass" placeholder="Set Password" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-blue-500">
                             <select id="admin-new-role" onchange="handleRoleChange()" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none">
                                 <option value="student">Student</option>
                                 <option value="teacher">Teacher</option>
                                 <option value="admin">Admin</option>
                             </select>
-                            <select id="admin-new-class" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-green-500">
+                            <select id="admin-new-class" class="w-full p-3.5 bg-slate-50 border rounded-2xl outline-none focus:ring-2 ring-blue-500">
                                 <option value="" disabled selected>Select Class</option>
                                 <option value="Sophomore Software Eng">Sophomore Software Eng</option>
                                 <option value="Junior Software Eng">Junior Software Eng</option>
@@ -539,14 +539,14 @@
                         <div id="admin-faculty-card" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
                             <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between">
                                 <span>Faculty</span>
-                                <span class="text-green-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-teachers">0</span>
+                                <span class="text-blue-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-teachers">0</span>
                             </div>
                             <div class="max-h-60 overflow-y-auto custom-scroll"><table class="w-full text-sm"><tbody id="table-teachers" class="divide-y"></tbody></table></div>
                         </div>
                         <div id="admin-top-students-card" class="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
                             <div class="bg-slate-50 px-6 py-4 border-b font-bold flex justify-between items-center">
                                 <span>Top Student by Class</span>
-                                <span class="text-green-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-top-classes">0</span>
+                                <span class="text-blue-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-top-classes">0</span>
                             </div>
                             <div id="admin-top-students" class="p-4 space-y-3 max-h-60 overflow-y-auto custom-scroll"></div>
                         </div>
@@ -554,7 +554,7 @@
                             <div class="bg-slate-50 px-6 py-4 border-b font-bold flex items-center justify-between gap-3">
                                 <span>Assessments</span>
                                 <div class="flex items-center gap-2">
-                                    <span class="text-green-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-exams">0</span>
+                                    <span class="text-blue-600 bg-white px-2 py-0.5 rounded-lg border text-xs" id="count-exams">0</span>
                                     <button onclick="clearAllAssessmentHistory()" class="px-3 py-1 rounded-lg bg-red-50 text-red-600 text-[11px] font-black uppercase tracking-widest hover:bg-red-100 transition" title="Clear all assessment submission history">
                                         Clear History
                                     </button>
@@ -569,13 +569,13 @@
                         </div>
 
                         <div id="admin-class-page" class="hidden bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-                            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-green-600 via-slate-900 to-slate-800 text-white p-8 mb-8">
+                            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-blue-600 via-slate-900 to-slate-800 text-white p-8 mb-8">
                                 <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(circle at top right, rgba(255,255,255,0.24), transparent 35%), radial-gradient(circle at bottom left, rgba(99,102,241,0.5), transparent 28%);"></div>
                                 <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                                     <div class="max-w-2xl">
-                                        <p class="text-[11px] font-black uppercase tracking-[0.35em] text-green-100">Class Workspace</p>
+                                        <p class="text-[11px] font-black uppercase tracking-[0.35em] text-blue-100">Class Workspace</p>
                                         <h2 id="admin-class-page-title" class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Class Students</h2>
-                                        <p class="mt-4 text-green-100 max-w-xl leading-relaxed">This page shows only one class at a time, with a clean workspace for managing learners, no cross-class mixing, and direct edit or delete actions.</p>
+                                        <p class="mt-4 text-blue-100 max-w-xl leading-relaxed">This page shows only one class at a time, with a clean workspace for managing learners, no cross-class mixing, and direct edit or delete actions.</p>
                                     </div>
                                     <div class="flex flex-wrap gap-3">
                                         <button onclick="publishClassResults()" id="admin-class-publish-btn" class="bg-white/10 hover:bg-white/20 text-white px-5 py-3 rounded-2xl text-sm font-bold transition border border-white/20 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -615,7 +615,7 @@
                                         <p class="text-[11px] font-black uppercase tracking-widest text-slate-400">Class Assessments</p>
                                         <h3 class="text-lg font-extrabold text-slate-900">Assessments assigned to this class</h3>
                                     </div>
-                                    <span id="admin-class-assessments-count" class="text-xs font-black uppercase tracking-widest text-green-600 bg-white px-3 py-1 rounded-full border border-green-100">0</span>
+                                    <span id="admin-class-assessments-count" class="text-xs font-black uppercase tracking-widest text-blue-600 bg-white px-3 py-1 rounded-full border border-blue-100">0</span>
                                 </div>
                                 <div id="admin-class-assessments" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
                             </div>
@@ -629,15 +629,15 @@
                         </div>
 
                         <div id="admin-student-profile-page" class="hidden bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-                            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-green-700 to-green-500 text-white p-8 mb-8">
+                            <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-slate-900 via-blue-700 to-blue-500 text-white p-8 mb-8">
                                 <div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: radial-gradient(circle at top right, rgba(255,255,255,0.22), transparent 35%), radial-gradient(circle at bottom left, rgba(255,255,255,0.14), transparent 28%);"></div>
                                 <div class="relative flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                                     <div class="max-w-2xl flex items-center gap-5">
                                         <img id="admin-profile-pfp" src="" class="w-24 h-24 rounded-[1.8rem] border-4 border-white/20 object-cover shadow-2xl">
                                         <div>
-                                            <p class="text-[11px] font-black uppercase tracking-[0.35em] text-green-100">Student Profile</p>
+                                            <p class="text-[11px] font-black uppercase tracking-[0.35em] text-blue-100">Student Profile</p>
                                             <h2 id="admin-profile-name" class="mt-3 text-4xl md:text-5xl font-black tracking-tight">Student</h2>
-                                            <p id="admin-profile-class" class="mt-3 text-green-100 max-w-xl leading-relaxed">Class details</p>
+                                            <p id="admin-profile-class" class="mt-3 text-blue-100 max-w-xl leading-relaxed">Class details</p>
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap gap-3">
@@ -688,14 +688,14 @@
                 <!-- Teacher Analytics Summary -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                     <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 flex items-center gap-6">
-                        <div class="bg-green-100 p-4 rounded-2xl text-2xl">📚</div>
+                        <div class="bg-blue-100 p-4 rounded-2xl text-2xl">📚</div>
                         <div>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Assessments</p>
                             <h3 id="teacher-stat-exams" class="text-3xl font-black text-slate-900">0</h3>
                         </div>
                     </div>
                     <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-200 flex items-center gap-6">
-                        <div class="bg-green-100 p-4 rounded-2xl text-2xl">📝</div>
+                        <div class="bg-blue-100 p-4 rounded-2xl text-2xl">📝</div>
                         <div>
                             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total Submissions</p>
                             <h3 id="teacher-stat-subs" class="text-3xl font-black text-slate-900">0</h3>
@@ -706,22 +706,22 @@
                 <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-200 max-w-4xl mx-auto">
                     <div class="flex justify-between items-center mb-8">
                         <h2 id="teacher-form-title" class="text-3xl font-black text-slate-900">Create Assessment</h2>
-                        <span class="bg-green-50 text-green-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Editor Mode</span>
+                        <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Editor Mode</span>
                     </div>
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Exam Title</label>
-                                <input type="text" id="teacher-exam-title" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-green-400" placeholder="e.g. Physics Midterm">
+                                <input type="text" id="teacher-exam-title" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-400" placeholder="e.g. Physics Midterm">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Duration (Minutes)</label>
-                                <input type="number" id="teacher-exam-duration" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-green-400" value="30">
+                                <input type="number" id="teacher-exam-duration" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-400" value="30">
                             </div>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Assign to Class</label>
-                            <select id="teacher-exam-class" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-green-400">
+                            <select id="teacher-exam-class" class="w-full p-4 bg-slate-50 border-2 border-slate-100 rounded-2xl outline-none focus:border-blue-400">
                                 <option value="" disabled selected>Select Class</option>
                                 <option value="Sophomore Software Eng">Sophomore Software Eng</option>
                                 <option value="Junior Software Eng">Junior Software Eng</option>
@@ -731,10 +731,10 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-400 mb-2 uppercase">Import Questions (CSV Format)</label>
                             <p class="text-[10px] text-slate-400 mb-2 italic font-medium">Format: Question, OptA, OptB, OptC, OptD, CorrectAnswer</p>
-                            <textarea id="teacher-exam-csv" rows="6" class="w-full p-5 bg-slate-900 text-green-400 font-mono text-sm rounded-3xl" placeholder="Sample: What is 2+2,3,4,5,6,4"></textarea>
+                            <textarea id="teacher-exam-csv" rows="6" class="w-full p-5 bg-slate-900 text-blue-400 font-mono text-sm rounded-3xl" placeholder="Sample: What is 2+2,3,4,5,6,4"></textarea>
                         </div>
                         <div class="flex gap-4">
-                            <button onclick="teacherSaveExam()" id="teacher-submit-btn" class="flex-1 bg-green-600 text-white py-5 rounded-[1.5rem] font-black text-lg hover:bg-green-700 shadow-xl shadow-green-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed">PUBLISH TO CLOUD</button>
+                            <button onclick="teacherSaveExam()" id="teacher-submit-btn" class="flex-1 bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-lg hover:bg-blue-700 shadow-xl shadow-blue-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed">PUBLISH TO CLOUD</button>
                             <button onclick="teacherResetForm()" id="teacher-cancel-edit" class="hidden px-8 bg-slate-100 text-slate-600 py-5 rounded-[1.5rem] font-bold hover:bg-slate-200 transition-all">Cancel</button>
                         </div>
                     </div>
@@ -743,7 +743,7 @@
                 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <h2 class="text-2xl font-extrabold">My Published Assessments</h2>
-                        <input type="text" id="teacher-search-exams" oninput="renderTeacherExams()" placeholder="Filter assessments..." class="p-3 border rounded-2xl text-sm outline-none focus:ring-2 ring-green-500 w-full sm:w-64">
+                        <input type="text" id="teacher-search-exams" oninput="renderTeacherExams()" placeholder="Filter assessments..." class="p-3 border rounded-2xl text-sm outline-none focus:ring-2 ring-blue-500 w-full sm:w-64">
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
@@ -764,7 +764,7 @@
                 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <h2 class="text-2xl font-extrabold">Class Submissions</h2>
-                        <input type="text" id="teacher-search-results" oninput="renderResults('teacher-results-table')" placeholder="Filter submissions..." class="p-3 border rounded-2xl text-sm outline-none focus:ring-2 ring-green-500 w-full sm:w-64">
+                        <input type="text" id="teacher-search-results" oninput="renderResults('teacher-results-table')" placeholder="Filter submissions..." class="p-3 border rounded-2xl text-sm outline-none focus:ring-2 ring-blue-500 w-full sm:w-64">
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
@@ -808,10 +808,10 @@
                     <div class="flex flex-col lg:flex-row gap-8">
                         <div class="flex-1 space-y-6" id="student-questions"></div>
                         <div class="w-full lg:w-80">
-                            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border-2 border-green-100 sticky top-28 text-center">
+                            <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border-2 border-blue-100 sticky top-28 text-center">
                                 <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Timer Running</h4>
                                 <div id="timer" class="text-5xl font-black text-slate-900 mb-6 tabular-nums tracking-tighter">00:00</div>
-                                <button onclick="studentConfirmSubmit()" id="student-submit-btn" class="w-full bg-green-500 hover:bg-green-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-green-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed">Submit Now</button>
+                                <button onclick="studentConfirmSubmit()" id="student-submit-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-5 rounded-2xl font-bold text-xl shadow-lg shadow-blue-100 transition-all disabled:opacity-70 disabled:cursor-not-allowed">Submit Now</button>
                                 <p class="mt-4 text-[10px] text-slate-400 font-medium">Do not close this tab or your progress will be lost.</p>
                             </div>
                         </div>
@@ -1316,12 +1316,12 @@
             document.getElementById('admin-class-filters').innerHTML = classButtons.map(btn => {
                 const active = adminActiveClassView === btn.value;
                 const baseClasses = active
-                    ? 'bg-gradient-to-br from-green-600 to-slate-900 text-white border-green-600 shadow-xl shadow-green-100'
-                    : 'bg-white text-slate-700 border-slate-200 hover:border-green-200 hover:shadow-lg hover:-translate-y-0.5';
+                    ? 'bg-gradient-to-br from-blue-600 to-slate-900 text-white border-blue-600 shadow-xl shadow-blue-100'
+                    : 'bg-white text-slate-700 border-slate-200 hover:border-blue-200 hover:shadow-lg hover:-translate-y-0.5';
                 return `
                     <button type="button" data-class-filter="${encodeURIComponent(btn.value)}" class="w-full min-w-0 text-left px-5 py-4 rounded-[1.5rem] border text-sm font-bold transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 whitespace-normal ${baseClasses}">
                         <span class="min-w-0 flex-1">
-                            <span class="block text-[11px] uppercase tracking-[0.25em] ${active ? 'text-green-100' : 'text-slate-400'}">Class Workspace</span>
+                            <span class="block text-[11px] uppercase tracking-[0.25em] ${active ? 'text-blue-100' : 'text-slate-400'}">Class Workspace</span>
                             <span class="block text-base font-black truncate mt-1">${escapeHtml(btn.label)}</span>
                         </span>
                         <span class="shrink-0 text-[11px] font-black px-3 py-1 rounded-full self-start sm:self-auto ${active ? 'bg-white/15 text-white border border-white/20' : 'bg-slate-50 text-slate-500 border border-slate-200'}">${btn.count} Learners</span>
@@ -1352,7 +1352,7 @@
                                     <p class="text-[10px] uppercase tracking-[0.25em] text-slate-400 font-black">${escapeHtml(item.className)}</p>
                                     <p class="font-black text-slate-900 truncate">${escapeHtml(topUser?.id || 'No submissions yet')}</p>
                                 </div>
-                                <span class="text-[11px] font-black px-3 py-1 rounded-full ${topBest ? 'bg-green-600 text-white' : 'bg-white text-slate-400 border border-slate-200'}">${topBest ? `${topBest.percent}%` : 'N/A'}</span>
+                                <span class="text-[11px] font-black px-3 py-1 rounded-full ${topBest ? 'bg-blue-600 text-white' : 'bg-white text-slate-400 border border-slate-200'}">${topBest ? `${topBest.percent}%` : 'N/A'}</span>
                             </div>
                             <p class="text-xs text-slate-500 mt-1">${topBest ? `Fastest best run: ${formatSeconds(topBest.timeTakenSeconds)}` : 'Waiting for first submission'}</p>
                         </div>
@@ -1368,7 +1368,7 @@
                             ${u.id} ${u.class ? `<span class="text-xs font-medium text-slate-500 ml-2">(${u.class})</span>` : ''}
                         </div>
                         <div class="flex items-center gap-1">
-                            <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-green-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
+                            <button onclick="adminEditUser('${u.id}')" class="text-slate-300 hover:text-blue-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Edit User"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path></svg></button>
                         </div>
                         <button onclick="adminDeleteUser('${u.id}')" class="text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all p-1" title="Delete User">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -1542,7 +1542,7 @@
                                         <h3 class="text-lg font-black text-slate-900 truncate">${u.id}</h3>
                                         <p class="text-sm text-slate-500 font-medium">${u.class || 'N/A'}</p>
                                     </div>
-                                    <span class="text-[11px] font-black uppercase tracking-widest ${best ? 'bg-green-50 text-green-600 border-green-100' : 'bg-slate-100 text-slate-400 border-slate-200'} px-3 py-1 rounded-full border">${best ? `${best.percent}%` : 'No score'}</span>
+                                    <span class="text-[11px] font-black uppercase tracking-widest ${best ? 'bg-blue-50 text-blue-600 border-blue-100' : 'bg-slate-100 text-slate-400 border-slate-200'} px-3 py-1 rounded-full border">${best ? `${best.percent}%` : 'No score'}</span>
                                 </div>
 
                                 <div class="mt-5 grid grid-cols-2 gap-3">
@@ -1562,7 +1562,7 @@
                                 </div>
 
                                 <div class="mt-5 flex flex-wrap gap-2">
-                                    <button onclick="event.stopPropagation(); adminEditUser('${u.id}')" class="px-4 py-2 rounded-xl text-sm font-bold bg-green-600 text-white hover:bg-green-700 transition">
+                                    <button onclick="event.stopPropagation(); adminEditUser('${u.id}')" class="px-4 py-2 rounded-xl text-sm font-bold bg-blue-600 text-white hover:bg-blue-700 transition">
                                         Edit Learner
                                     </button>
                                     <button onclick="event.stopPropagation(); adminDeleteUser('${u.id}')" class="px-4 py-2 rounded-xl text-sm font-bold bg-red-50 text-red-600 hover:bg-red-100 transition">
@@ -1608,7 +1608,7 @@
                             <h4 class="text-xl font-black text-slate-900 mt-1">${escapeHtml(record.examTitle)}</h4>
                         </div>
                         <div class="flex flex-col items-end gap-2">
-                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-green-50 text-green-600 border border-green-100">${getAssessmentKind(record.examTitle)}</span>
+                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">${getAssessmentKind(record.examTitle)}</span>
                             <span class="text-[11px] font-black px-3 py-1 rounded-full bg-slate-900 text-white">${record.percent}%</span>
                         </div>
                     </div>
@@ -1640,7 +1640,7 @@
                     </div>
                     <div class="mt-4 flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Tap for full breakdown</span>
-                        <span class="text-green-600 text-sm font-bold group-hover:translate-x-0.5 transition-transform">Open Review -></span>
+                        <span class="text-blue-600 text-sm font-bold group-hover:translate-x-0.5 transition-transform">Open Review -></span>
                     </div>
                 </div>
             `).join('') || `<div class="col-span-full rounded-[1.5rem] border border-slate-200 bg-slate-50 p-10 text-center text-slate-400 font-bold italic">No assessment records for this student yet.</div>`;
@@ -1768,7 +1768,7 @@
                 alternateRowStyles: { fillColor: [248, 250, 252] }
             });
 
-            doc.save("EduExam_Results_Report.pdf");
+            doc.save("EduX_Results_Report.pdf");
         }
 
         // --- PERFORMANCE ANALYTICS MODAL ---
@@ -1833,16 +1833,16 @@
                         <p class="text-[10px] font-black uppercase tracking-widest text-red-500">Question ${item.index + 1}</p>
                         <p class="text-sm font-bold text-slate-800 mt-2">${escapeHtml(item.question)}</p>
                         <p class="text-xs text-slate-500 mt-3">Your answer: <span class="font-bold text-slate-700">${escapeHtml(item.studentAnswer || 'Not answered')}</span></p>
-                        <p class="text-xs text-slate-500 mt-1">Correct answer: <span class="font-bold text-green-600">${escapeHtml(item.correctAnswer || 'N/A')}</span></p>
+                        <p class="text-xs text-slate-500 mt-1">Correct answer: <span class="font-bold text-blue-600">${escapeHtml(item.correctAnswer || 'N/A')}</span></p>
                     </div>
                 `).join('')
-                : `<div class="rounded-2xl border border-green-100 bg-green-50 p-5 text-green-700 font-bold text-sm">No wrong answers. This was a perfect submission.</div>`;
+                : `<div class="rounded-2xl border border-blue-100 bg-blue-50 p-5 text-blue-700 font-bold text-sm">No wrong answers. This was a perfect submission.</div>`;
 
             const questionCards = review.reviewItems.map(item => `
-                <div class="p-6 rounded-[2rem] border-2 ${item.isCorrect ? 'border-green-100 bg-green-50' : 'border-red-100 bg-red-50'}">
+                <div class="p-6 rounded-[2rem] border-2 ${item.isCorrect ? 'border-blue-100 bg-blue-50' : 'border-red-100 bg-red-50'}">
                     <div class="flex justify-between items-start mb-4 gap-4">
                         <h4 class="font-extrabold text-slate-800 text-lg">${item.index + 1}. ${escapeHtml(item.question)}</h4>
-                        <span class="${item.isCorrect ? 'text-green-600' : 'text-red-600'} font-black text-sm uppercase whitespace-nowrap">
+                        <span class="${item.isCorrect ? 'text-blue-600' : 'text-red-600'} font-black text-sm uppercase whitespace-nowrap">
                             ${item.isCorrect ? 'Correct' : 'Wrong'}
                         </span>
                     </div>
@@ -1853,13 +1853,13 @@
                         </div>
                         <div class="rounded-2xl bg-white border border-slate-100 p-3">
                             <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Correct Answer</p>
-                            <p class="text-sm font-bold text-green-600 mt-1">${escapeHtml(item.correctAnswer || 'N/A')}</p>
+                            <p class="text-sm font-bold text-blue-600 mt-1">${escapeHtml(item.correctAnswer || 'N/A')}</p>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
                         ${item.options.map(opt => {
                             let style = 'bg-white border-slate-100 text-slate-500';
-                            if (opt === item.correctAnswer) style = 'bg-green-500 border-green-500 text-white font-bold ring-4 ring-green-100';
+                            if (opt === item.correctAnswer) style = 'bg-blue-500 border-blue-500 text-white font-bold ring-4 ring-blue-100';
                             if (opt === item.studentAnswer && !item.isCorrect) style = 'bg-red-500 border-red-500 text-white font-bold ring-4 ring-red-100';
                             return `<div class="p-3 border-2 rounded-xl text-sm ${style}">${escapeHtml(opt)}</div>`;
                         }).join('')}
@@ -1877,10 +1877,10 @@
                             </div>
                             <span id="review-note-status" class="text-xs font-black uppercase tracking-widest text-slate-400">${sub.adminNote ? 'Saved to cloud' : 'No note yet'}</span>
                         </div>
-                        <textarea id="review-note-input" rows="4" class="w-full rounded-[1.5rem] border border-slate-200 bg-white p-4 text-sm font-medium outline-none focus:ring-2 ring-green-500" placeholder="Write what the student did well, what they missed, or how to improve.">${escapeHtml(sub.adminNote || '')}</textarea>
+                        <textarea id="review-note-input" rows="4" class="w-full rounded-[1.5rem] border border-slate-200 bg-white p-4 text-sm font-medium outline-none focus:ring-2 ring-blue-500" placeholder="Write what the student did well, what they missed, or how to improve.">${escapeHtml(sub.adminNote || '')}</textarea>
                         <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <p class="text-xs text-slate-500 font-medium">This note is saved to the cloud and visible in the student results view.</p>
-                            <button onclick="saveSubmissionNote(${subIdx})" id="review-note-save-btn" class="px-5 py-3 rounded-2xl bg-green-600 text-white text-sm font-bold hover:bg-green-700 transition disabled:opacity-60 disabled:cursor-not-allowed">
+                            <button onclick="saveSubmissionNote(${subIdx})" id="review-note-save-btn" class="px-5 py-3 rounded-2xl bg-blue-600 text-white text-sm font-bold hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed">
                                 Save Note
                             </button>
                         </div>
@@ -1921,7 +1921,7 @@
                             <p class="text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">Wrong Questions</p>
                             <h4 class="text-lg font-black text-slate-900 mt-1">${review.wrongQuestions.length ? `${review.wrongQuestions.length} item(s) need review` : 'No mistakes found'}</h4>
                         </div>
-                        <span class="text-[11px] font-black px-3 py-1 rounded-full ${review.wrongQuestions.length ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-green-50 text-green-600 border border-green-100'}">${review.percent}%</span>
+                        <span class="text-[11px] font-black px-3 py-1 rounded-full ${review.wrongQuestions.length ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-blue-50 text-blue-600 border border-blue-100'}">${review.percent}%</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">${wrongSummary}</div>
                 </div>
@@ -1992,8 +1992,8 @@
             });
 
             table.innerHTML = filteredSubmissions.map(data => `
-                <tr class="hover:bg-green-50 cursor-pointer group transition" onclick="openReview(${data.originalIndex})">
-                    <td class="p-5 font-black text-green-600 underline-offset-4 group-hover:underline">${data.studentId}</td>
+                <tr class="hover:bg-blue-50 cursor-pointer group transition" onclick="openReview(${data.originalIndex})">
+                    <td class="p-5 font-black text-blue-600 underline-offset-4 group-hover:underline">${data.studentId}</td>
                     <td class="p-5 font-bold text-slate-600">${data.examTitle}</td>
                     <td class="p-5 text-slate-500">${data.studentClass}</td>
                     <td class="p-5 font-black text-slate-900">${data.score}/${data.totalQuestions} <span class="text-[10px] text-slate-400 font-medium ml-1">(${data.percent}%)</span></td>
@@ -2054,7 +2054,7 @@
                     <td class="p-5 text-slate-500">${ex.duration}m</td>
                     <td class="p-5 text-right">
                         <div class="flex items-center justify-end gap-2">
-                            <button onclick="teacherEditExam('${ex.id}')" class="bg-green-50 text-green-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-100 transition">
+                            <button onclick="teacherEditExam('${ex.id}')" class="bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 transition">
                                 Edit
                             </button>
                             <button onclick="teacherDeleteExam('${ex.id}')" class="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-100 transition" title="Delete ${getAssessmentKind(ex.title)}">
@@ -2175,14 +2175,14 @@
             list.innerHTML = availableExams.map(ex => {
                 const done = db.submissions.some(s => s.examId === ex.id && s.studentId === currentUser.id);
                 return `
-                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-transparent hover:border-green-500 transition-all group">
+                    <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-transparent hover:border-blue-500 transition-all group">
                         <div class="flex justify-between items-start mb-4">
                             <h3 class="text-2xl font-black text-slate-800">${ex.title}</h3>
                             <span class="bg-slate-100 text-slate-400 p-2 rounded-xl">📝</span>
                         </div>
                         <p class="text-slate-500 font-medium mb-8">${ex.questions.length} Problems • ${ex.duration} Minutes • Class: ${ex.class}</p>
                         <button onclick="studentStartExam('${ex.id}')" ${done ? 'disabled' : ''} 
-                            class="w-full py-4 rounded-2xl font-bold transition-all ${done ? 'bg-slate-50 text-slate-300' : 'bg-green-600 text-white shadow-lg group-hover:scale-[1.02]'}">
+                            class="w-full py-4 rounded-2xl font-bold transition-all ${done ? 'bg-slate-50 text-slate-300' : 'bg-blue-600 text-white shadow-lg group-hover:scale-[1.02]'}">
                             ${done ? 'Completed' : 'Begin Assessment'}
                         </button>
                     </div>
@@ -2247,7 +2247,7 @@
                                 <h4 class="text-xl font-black text-slate-900 mt-1 truncate">${escapeHtml(record.examTitle)}</h4>
                                 <p class="text-sm text-slate-500 font-medium mt-2">${record.correct}/${record.totalQuestions} correct | ${formatSeconds(record.timeTakenSeconds)}</p>
                             </div>
-                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-green-50 text-green-600 border border-green-100">${record.percent}%</span>
+                            <span class="text-[11px] font-black px-3 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">${record.percent}%</span>
                         </div>
                         <div class="mt-4 grid grid-cols-2 gap-3">
                             <div class="rounded-2xl bg-slate-50 border border-slate-100 p-3">
@@ -2269,7 +2269,7 @@
                         </div>
                         <div class="mt-4 flex items-center justify-between">
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Tap for full breakdown</span>
-                            <span class="text-green-600 text-sm font-bold group-hover:translate-x-0.5 transition-transform">View Review -></span>
+                            <span class="text-blue-600 text-sm font-bold group-hover:translate-x-0.5 transition-transform">View Review -></span>
                         </div>
                     </div>
                 `;
@@ -2288,8 +2288,8 @@
                     <h3 class="text-2xl font-extrabold text-slate-800 mb-8">${i+1}. ${q.q}</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${q.options.map(o => `
-                            <label class="p-5 border-2 border-slate-50 bg-slate-50 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-green-500 hover:bg-white transition-all">
-                                <input type="radio" name="q${i}" value="${o}" class="w-6 h-6 text-green-600">
+                            <label class="p-5 border-2 border-slate-50 bg-slate-50 rounded-2xl flex items-center gap-4 cursor-pointer hover:border-blue-500 hover:bg-white transition-all">
+                                <input type="radio" name="q${i}" value="${o}" class="w-6 h-6 text-blue-600">
                                 <span class="font-bold text-slate-700">${o}</span>
                             </label>
                         `).join('')}
