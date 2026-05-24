@@ -1,12 +1,12 @@
 {
-  "name": "EduExam Pro",
-  "short_name": "EduExam",
-  "description": "EduExam Pro Assessment System",
-  "start_url": "./index.html",
+  "name": "EduX",
+  "short_name": "EduX",
+  "description": "EduX Assessment System",
+  "start_url": "./system41.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#16a34a",
+  "theme_color": "#2563eb",
   "icons": [
     {
       "src": "icon-192.png",

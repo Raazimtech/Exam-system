@@ -1,9 +1,10 @@
-const CACHE_NAME = 'eduexam-pro-v1';
+const CACHE_NAME = 'edux-v1';
 
 const CORE_ASSETS = [
-  './index.html',
+  './system41.html',
   './manifest.json',
-  './logo1.png',
+  './logo official.png',
+  './favicon-32.png',
   './raazim%20logo.png',
   './icon-192.png',
   './icon-512.png'
@@ -34,7 +35,7 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin) return;
 
   if (event.request.mode === 'navigate') {
-    event.respondWith(fetch(event.request).catch(() => caches.match('./index.html')));
+    event.respondWith(fetch(event.request).catch(() => caches.match('./system41.html')));
     return;
   }
 
@@ -50,7 +51,7 @@ self.addEventListener('fetch', (event) => {
           }
           return response;
         })
-        .catch(() => caches.match('./index.html'));
+        .catch(() => caches.match('./system41.html'));
     })
   );
 });
